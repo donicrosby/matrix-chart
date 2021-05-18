@@ -28,6 +28,7 @@ spec:
     - host: {{ .Values.ingress.hosts.synapse }}
       http:
         paths:
+          pathType: Prefix
           - path: "/"
             backend:
               service:
@@ -38,6 +39,7 @@ spec:
     - host: {{ .Values.ingress.hosts.riot }}
       http:
         paths:
+          pathType: Prefix
           - path: "/"
             backend:
               service:
@@ -49,6 +51,7 @@ spec:
     - host: {{ .Values.ingress.hosts.federation }}
       http:
         paths:
+          pathType: Prefix
           - path: "/"
             backend:
               service:
