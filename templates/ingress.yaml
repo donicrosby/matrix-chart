@@ -51,8 +51,9 @@ spec:
         paths:
           - path: "/"
             backend:
-              name: "{{ include "matrix.fullname" . }}-synapse-federation"
-              port:
-                number: {{ .Values.synapse.service.federation.port }}
+              service:
+                name: "{{ include "matrix.fullname" . }}-synapse-federation"
+                port:
+                  number: {{ .Values.synapse.service.federation.port }}
     {{- end }}
 {{- end }}
