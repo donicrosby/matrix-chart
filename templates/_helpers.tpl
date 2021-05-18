@@ -71,6 +71,12 @@ Coturn specific labels
 {{- end }}
 {{- end -}}
 
+{{- define "matrix.coturn.service.annotations" -}}
+{{- range $key, $val := .Values.coturn.service.annotations -}}
+{{ $key }}: {{ $val }}
+{{- end }}
+{{- end -}}
+
 {{/*
 Mail relay specific labels
 */}}

@@ -7,8 +7,20 @@ metadata:
   labels:
 {{ include "matrix.labels" . | indent 4 }}
 {{ include "matrix.coturn.labels" . | indent 4}}
+  {{- if .Values.coturn.service.annotations }}
+  annotations:
+    {{ include "matrix.coturn.service.annotations" . }}
+  {{- end }}
 spec:
   type: {{ .Values.coturn.service.type }}
+  {{- if eq .Values.coturn.service.type "LoadBalancer" }}
+  {{- if .Values.coturn.service.loadBalancerIP }}
+  loadBalancerIP: {{ .Values.coturn.service.loadBalancerIP }}
+  {{- end }}
+  {{- if .Values.coturn.service.loadBalancerSourceRanges }}
+  loadBalancerSourceRanges:  {{ toYaml .Values.coturn.service.loadBalancerSourceRanges | nindent 4 }}
+  {{- end }}
+  {{- end }}
   ports:
     - port: 3478
       targetPort: turn-3478

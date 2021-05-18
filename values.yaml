@@ -426,12 +426,17 @@ coturn:
   service:
     # The type of service to deploy for routing Coturn traffic
     # Options:
-    #   ClusterIP: Recommended for DaemonSet configurations. This will create a standard Kubernetes service for Coturn within the cluster. No external networking
-    #              will be configured as the DaemonSet will handle binding to each Node's host networking
-    #   NodePort:  Recommended for Deployment configurations. This will open TURN ports on every node and route traffic on these ports to the Coturn pods.
-    #              You will need to make sure your cloud provider supports the cluster config setting "apiserver.service-node-port-range", as this range must contain
-    #              the ports defined above for the service to be created.
+    #   ClusterIP:     Recommended for DaemonSet configurations. This will create a standard Kubernetes service for Coturn within the cluster. No external networking
+    #                  will be configured as the DaemonSet will handle binding to each Node's host networking
+    #   NodePort:      Recommended for Deployment configurations. This will open TURN ports on every node and route traffic on these ports to the Coturn pods.
+    #                  You will need to make sure your cloud provider supports the cluster config setting "apiserver.service-node-port-range", as this range must contain
+    #                  the ports defined above for the service to be created.
+    #   LoadBalancer:  Recommended for Deployment configurations. This allows for clusters with metallb and the like with a single public IP (homelab situations)
+    #                  to have the wide array of ports available on the loadbalancer service and will perform a Round-Robin balancing between all of the pods
     type: ClusterIP
+    annotations: {}
+    loadBalancerIP: ""
+    loadBalancerSourceRanges: []
 
   image:
     repository: "instrumentisto/coturn"
