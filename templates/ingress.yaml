@@ -40,8 +40,10 @@ spec:
         paths:
           - path: "/"
             backend:
-              serviceName: "{{ include "matrix.fullname" . }}-riot"
-              servicePort: {{ .Values.riot.service.port }}
+              service:
+                name: "{{ include "matrix.fullname" . }}-riot"
+                port:
+                  number: {{ .Values.riot.service.port }}
     {{- end }}
     {{- if .Values.ingress.federation }}
     - host: {{ .Values.ingress.hosts.federation }}
@@ -49,7 +51,8 @@ spec:
         paths:
           - path: "/"
             backend:
-              serviceName: "{{ include "matrix.fullname" . }}-synapse-federation"
-              servicePort: {{ .Values.synapse.service.federation.port }}
+              name: "{{ include "matrix.fullname" . }}-synapse-federation"
+              port:
+                number: {{ .Values.synapse.service.federation.port }}
     {{- end }}
 {{- end }}
