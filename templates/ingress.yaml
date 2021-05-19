@@ -20,7 +20,7 @@ spec:
     - secretName: {{ .secretName }}
       hosts:
       {{- range .hosts }}
-        - {{ . | quote }}
+       - {{ . | quote }}
       {{- end }}
     {{- end }}
 {{- end }}
@@ -35,18 +35,6 @@ spec:
                 name: "{{ include "matrix.fullname" . }}-synapse"
                 port:
                   number: {{ .Values.synapse.service.port }}
-    {{- if .Values.riot.enabled }}
-    - host: {{ .Values.ingress.hosts.riot }}
-      http:
-        paths:
-          - pathType: Prefix
-            path: "/"
-            backend:
-              service:
-                name: "{{ include "matrix.fullname" . }}-riot"
-                port:
-                  number: {{ .Values.riot.service.port }}
-    {{- end }}
     {{- if .Values.ingress.federation }}
     - host: {{ .Values.ingress.hosts.federation }}
       http:
