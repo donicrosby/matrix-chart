@@ -618,7 +618,8 @@ bridges:
   discord:
     # Set to true to enable the Discord bridge
     enabled: false
-
+    # Useranme for the bridge bot on the server
+    botUser: "_discord_bot"
     # Discord bot authentication
     # See https://github.com/Half-Shot/matrix-appservice-discord#setting-up-discord
     auth:

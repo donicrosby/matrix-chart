@@ -101,7 +101,7 @@ data:
         - exclusive: true
           regex: '@_discord_.*'
     url: "http://{{ include "matrix.fullname" . }}-bridge-discord:{{ .Values.bridges.discord.service.port }}"
-    sender_localpart: _discord_bot
+    sender_localpart: {{ .Values.bridges.discord.botUser }}
     rate_limited: false
     protocols:
       - discord
