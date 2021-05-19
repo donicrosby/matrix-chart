@@ -303,7 +303,7 @@ synapse:
   # Labels to be appended to all Synapse resources
   labels:
     component: synapse
-  
+
   # Prometheus metrics for Synapse
   # https://github.com/matrix-org/synapse/blob/master/docs/metrics-howto.md
   metrics:
@@ -371,6 +371,11 @@ riot:
 
   # Prefix before permalinks generated when users share links to rooms, users, or messages. If running an unfederated Synapse, set the below to the URL of your Element instance.
   permalinkPrefix: "https://matrix.to"
+
+  ingress:
+    tls: []
+    host: element.chart-example.local
+    annotations: {}
 
   # Element Kubernetes resource settings
   image:
@@ -481,7 +486,7 @@ mail:
     labels:
       component: mail
 
-  
+
   # External mail server
   external:
     host: ""

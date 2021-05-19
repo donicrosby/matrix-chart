@@ -1,0 +1,41 @@
+{{- if and .Values.ingress.enabled .Values.riot.enabled -}}
+{{- if semverCompare ">=1.14-0" .Capabilities.KubeVersion.GitVersion -}}
+apiVersion: networking.k8s.io/v1
+{{- else -}}
+apiVersion: extensions/v1beta1
+{{- end }}
+kind: Ingress
+metadata:
+  name: {{ include "matrix.fullname" . }}-riot
+  labels:
+    {{- include "matrix.labels" . | nindent 4 }}
+    {{ include "matrix.element.labels" . | indent 4}}
+  {{- with .Values.riot.ingress.annotations }}
+  annotations:
+    {{- toYaml . | nindent 4 }}
+  {{- end }}
+spec:
+{{- if .Values.riot.ingress.tls }}
+  tls:
+    {{- range .Values.riot.ingress.tls }}
+    - secretName: {{ .secretName }}
+      hosts:
+      {{- range .hosts }}
+        - {{ . | quote }}
+      {{- end }}
+    {{- end }}
+{{- end }}
+  rules:
+    {{- if .Values.riot.enabled }}
+    - host: {{ .Values.riot.ingress.host }}
+      http:
+        paths:
+          - pathType: Prefix
+            path: "/"
+            backend:
+              service:
+                name: "{{ include "matrix.fullname" . }}-riot"
+                port:
+                  number: {{ .Values.riot.service.port }}
+    {{- end }}
+{{- end }}
