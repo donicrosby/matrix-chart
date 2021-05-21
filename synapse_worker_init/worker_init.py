@@ -76,7 +76,7 @@ environment in order for it to function
 """)
     worker_config = config_dir + "/worker_config.yaml"
     app = environ.get("SYNAPSE_WORKER", "synapse.app.generic_worker")
-    port = environ.get("WORKER_PORT", 8008)
+    port = int(environ.get("WORKER_PORT", 8008))
 
     if app == "synapse.app.generic_worker":
         generate_generic_worker_config(environ, worker_config,
