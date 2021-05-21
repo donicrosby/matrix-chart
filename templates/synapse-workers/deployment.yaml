@@ -67,9 +67,9 @@ spec:
           args:
             - "run"
             - "--config-path"
-            - "/worker/worker_config.yaml"
-            - "--config-path"
             - "/data/homeserver.yaml"
+            - "--config-path"
+            - "/worker/worker_config.yaml"
           env:
             - name: UID
               value: "1000"
