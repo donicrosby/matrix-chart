@@ -2290,7 +2290,7 @@ opentracing:
 listeners:
   # The HTTP replication port
   - port: {{ .Values.synapseWorkers.homeserverReplicationPort }}
-    bind_address: '0.0.0.0'
+    bind_address: '127.0.0.1'
     type: http
     resources:
      - names: [replication]
