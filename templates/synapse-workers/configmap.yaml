@@ -8,4 +8,4 @@ metadata:
 data:
   synapse_worker.yaml: |
     {{ include "synapse_worker.yaml" . | nindent 4 }}
-{{ (.Files.Glob "synapse_worker_init/worker_init.py").AsConfig | indent 2 }}
+{{ (.Files.Get "synapse_worker_init/worker_init.py").AsConfig | indent 2 }}
