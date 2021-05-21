@@ -63,6 +63,7 @@ spec:
         - name: "synapse-worker"
           image: "{{ .Values.synapse.image.repository }}:{{ .Values.synapse.image.tag }}"
           imagePullPolicy: {{ .Values.synapse.image.pullPolicy }}
+          command: ["/start.py"]
           args:
             - "run"
             - "--config"
