@@ -601,7 +601,7 @@ database:
         user: "{{ .Values.postgresql.username }}"
         password: "{{ .Values.postgresql.password }}"
         database: "{{ .Values.postgresql.database }}"
-        
+
         {{- if .Values.postgresql.enabled }}
         host: "{{ include "matrix.fullname" . }}-postgresql"
         port: "5432"
@@ -2285,6 +2285,16 @@ opentracing:
     #
     #  logging:
     #    false
+
+{{- if .Values.synapseWorkers.enabled }}
+# Add a random shared secret to authenticate traffic.
+worker_replication_secret: "{{ matrix.synapseWorkers.sharedSecret }}"
+
+redis:
+    enabled: true
+    host: "{{ .Values.synapseWorkers.redis.host }}"
+    port: {{ .Values.synapseWorkers.redis.port }}
+{{- end }}
 
 {{ if .Values.matrix.homeserverExtra }}
 {{- toYaml .Values.matrix.homeserverExtra }}

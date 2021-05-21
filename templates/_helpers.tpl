@@ -53,6 +53,15 @@ Synapse specific labels
 {{- end -}}
 
 {{/*
+Synapse Worker specific labels
+*/}}
+{{- define "matrix.synapseWorkers.labels" -}}
+{{- range $key, $val := .Values.synapseWorkers.labels -}}
+{{ $key }}: {{ $val }}
+{{- end }}
+{{- end -}}
+
+{{/*
 Element specific labels
 */}}
 #TOOO: Change riot to element

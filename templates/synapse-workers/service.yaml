@@ -1,0 +1,17 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ include "matrix.fullname" . }}-synapse-workers
+  labels:
+{{ include "matrix.labels" . | indent 4 }}
+{{ include "matrix.synapseWorker.labels" . | indent 4}}
+spec:
+  type: {{ .Values.synapseWorker.service.type }}
+  ports:
+    - port: {{ .Values.synapseWorker.service.port }}
+      targetPort: http
+      protocol: TCP
+      name: http
+  selector:
+    app.kubernetes.io/name: {{ include "matrix.name" . }}-synapse-workers
+    app.kubernetes.io/instance: {{ .Release.Name }}

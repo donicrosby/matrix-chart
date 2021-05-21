@@ -1,0 +1,111 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "matrix.fullname" . }}-synapse-workers
+  labels:
+{{ include "matrix.labels" . | indent 4 }}
+{{ include "matrix.synapseWorkers.labels" . | indent 4}}
+spec:
+  replicas: {{ .Values.synapseWorkers.replicaCount }}
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: {{ include "matrix.name" . }}-synapse-workers
+      app.kubernetes.io/instance: {{ .Release.Name }}
+  strategy:
+    type: RollingUpdate
+  template:
+    metadata:
+      annotations:
+        # re-roll deployment on homeserver.yaml change
+        checksum/synapse-config: {{ include (print $.Template.BasePath "/synapse/configmap.yaml") . | sha256sum }}
+        checksum/synapse-worker-config: {{ include (print $.Template.BasePath "/synapse-workers/configmap.yaml") . | sha256sum }}
+      labels:
+        app.kubernetes.io/name: {{ include "matrix.name" . }}-synapse-workers
+        app.kubernetes.io/instance: {{ .Release.Name }}
+    spec:
+      {{- with .Values.imagePullSecrets }}
+      imagePullSecrets:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      securityContext:
+        runAsUser: 1000
+        runAsGroup: 1000
+        fsGroup: 1000
+      initContainers:
+        - name: generate-synapse-worker-config
+          # Same synapse image
+          image: "{{ .Values.synapse.image.repository }}:{{ .Values.synapse.image.tag }}"
+          imagePullPolicy: {{ .Values.synapse.image.pullPolicy }}
+          env:
+            - name: SYNAPSE_WORKER
+              value: synapse.app.generic_worker
+            - name: WORKER_CONFIG_GEN
+              value: /worker-gen
+            - name: WORKER_NAME
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.name
+          command: ["python"]
+          args:
+            - /templates/worker_init.py
+          volumeMounts:
+            - name: worker-templates
+              mountPath: /templates
+            - name: worker-config
+              mountPath: /worker-gen
+      containers:
+        - name: "synapse-worker"
+          image: "{{ .Values.synapse.image.repository }}:{{ .Values.synapse.image.tag }}"
+          imagePullPolicy: {{ .Values.synapse.image.pullPolicy }}
+          args:
+            - "--config"
+            - "/worker/worker_config.yaml"
+            - "--config"
+            - "/data/homeserver.yaml"
+          env:
+            - name: UID
+              value: "1000"
+            - name: GID
+              value: "1000"
+            - name: SYNAPSE_WORKER
+              value: synapse.app.generic_worker
+          ports:
+            - name: http
+              containerPort: {{ .Values.synapseWorkers.service.port }}
+              protocol: TCP
+          volumeMounts:
+            - name: synapse-config
+              mountPath: /data
+            - name: worker-config
+              mountPath: /worker
+          readinessProbe:
+            httpGet:
+              path: /health
+              port: http
+          startupProbe:
+            httpGet:
+              path: /health
+              port: http
+          livenessProbe:
+            httpGet:
+              path: /health
+              port: http
+          securityContext:
+            capabilities:
+              drop:
+                - ALL
+            readOnlyRootFilesystem: true
+            allowPrivilegeEscalation: false
+          {{- with .Values.synapseWorker.resources }}
+          resources:
+            {{- toYaml . | nindent 12 }}
+          {{- end }}
+      volumes:
+        - name: synapse-config
+          configMap:
+            name: {{ include "matrix.fullname" . }}-synapse-config
+        - name: worker-templates
+          configMap:
+            name: {{ include "matrix.fullname" . }}-synapse-worker-templates
+        - name: worker-config
+          emptyDir: {}

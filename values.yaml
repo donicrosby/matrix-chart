@@ -313,6 +313,21 @@ synapse:
     port: 9092
     annotations: true
 
+# Configurations for Synapse Workers
+synapseWorkers:
+  enabled: true
+
+  sharedSecret: ""
+
+  redis:
+    host: redis.chart-example.local
+    port: 6379
+
+  replicaCount: 3
+
+  service:
+    port: 8008
+    type: ClusterIP
 
 # Element (formerly Riot Web) client configuration
 riot:
