@@ -4,7 +4,7 @@ metadata:
   name: {{ include "matrix.fullname" . }}-synapse-worker-templates
   labels:
 {{ include "matrix.labels" . | nindent 4}}
-{{ include "matrix.synapseWorker.labels" . | nindent 4}}
+{{ include "matrix.synapseWorkers.labels" . | nindent 4}}
 data:
   synapse_worker.yaml: |
     {{ include "synapse_worker.yaml" . | nindent 4 }}

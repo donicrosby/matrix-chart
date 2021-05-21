@@ -96,7 +96,7 @@ spec:
                 - ALL
             readOnlyRootFilesystem: true
             allowPrivilegeEscalation: false
-          {{- with .Values.synapseWorker.resources }}
+          {{- with .Values.synapseWorkers.resources }}
           resources:
             {{- toYaml . | nindent 12 }}
           {{- end }}
