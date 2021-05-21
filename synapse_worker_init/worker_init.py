@@ -39,7 +39,7 @@ def generate_generic_worker_config(environ, config_path, app, name):
         "listener_resources": listener_resources,
     }
 
-    template_values = environ.copy() + volitile_values
+    template_values = volitile_values.update(environ.copy()) 
 
     convert("/templates/synapse_worker.yaml", config_path, template_values)
 
