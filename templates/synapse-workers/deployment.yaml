@@ -82,12 +82,23 @@ spec:
               containerPort: {{ .Values.synapseWorkers.service.port }}
               protocol: TCP
           volumeMounts:
-            - name: synapse-config
-              mountPath: /data
             - name: worker-config
               mountPath: /worker
+            - name: synapse-config
+              mountPath: /data
+            - name: signing-key
+              mountPath: /data/keys
             - name: media-store
               mountPath: /data/media_store
+            {{- if or .Values.bridges.whatsapp.enabled .Values.bridges.discord.enabled .Values.bridges.irc.enabled }}
+            - name: bridges
+              mountPath: /bridges
+              readOnly: true
+            {{- end }}
+            - name: uploads
+              mountPath: /data/uploads
+            - name: tmp
+              mountPath: /tmp
           readinessProbe:
             httpGet:
               path: /health
@@ -111,14 +122,27 @@ spec:
             {{- toYaml . | nindent 12 }}
           {{- end }}
       volumes:
-        - name: media-store
-          persistentVolumeClaim:
-            claimName: {{ include "matrix.fullname" . }}-media-store
-        - name: synapse-config
-          configMap:
-            name: {{ include "matrix.fullname" . }}-synapse-config
         - name: worker-templates
           configMap:
             name: {{ include "matrix.fullname" . }}-synapse-worker-templates
         - name: worker-config
+          emptyDir: {}
+        - name: synapse-config
+          configMap:
+            name: {{ include "matrix.fullname" . }}-synapse-config
+        - name: signing-key
+          persistentVolumeClaim:
+            claimName: {{ include "matrix.fullname" . }}-signing-key
+        - name: media-store
+          persistentVolumeClaim:
+            claimName: {{ include "matrix.fullname" . }}-media-store
+        {{- if or .Values.bridges.whatsapp.enabled .Values.bridges.discord.enabled .Values.bridges.irc.enabled }}
+        - name: bridges
+          persistentVolumeClaim:
+            claimName: {{ include "matrix.fullname" . }}-bridges
+        {{- end }}
+        # Ephemeral in-progress uploads
+        - name: uploads
+          emptyDir: {}
+        - name: tmp
           emptyDir: {}
