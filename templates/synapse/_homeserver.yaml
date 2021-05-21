@@ -231,6 +231,13 @@ listeners:
     resources:
       - names: [metrics]
 {{- end }}
+{{- if .Values.synapseWorkers.enabled }}
+  - port: {{ .Values.synapseWorkers.homeserverReplicationPort }}
+    bind_address: ['0.0.0.0']
+    type: http
+    resources:
+     - names: [replication]
+{{- end }}
   # Turn on the twisted ssh manhole service on localhost on the given
   # port.
   #
@@ -2287,15 +2294,6 @@ opentracing:
     #    false
 
 {{- if .Values.synapseWorkers.enabled }}
-listeners:
-  # The HTTP replication port
-  - port: {{ .Values.synapseWorkers.homeserverReplicationPort }}
-    bind_address: '127.0.0.1'
-    type: http
-    resources:
-     - names: [replication]
-
-
 # Add a random shared secret to authenticate traffic.
 worker_replication_secret: "{{ .Values.synapseWorkers.sharedSecret }}"
 
