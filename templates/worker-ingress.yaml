@@ -32,7 +32,7 @@ spec:
           {{- range .Values.synapseWorkers.ingress.generic_worker.client }}
           - path: {{ . | quote }}
             backend:
-              serviceName: "{{ include "matrix.fullname" . }}-synapse-workers"
+              serviceName: {{ include "matrix.fullname" . }}-synapse-workers
               servicePort: {{ .Values.synapseWorkers.service.port }}
           {{- end }}
     {{- if .Values.ingress.federation }}
@@ -42,7 +42,7 @@ spec:
           {{- range .Values.synapseWorkers.ingress.generic_worker.federation }}
           - path: {{ . | quote }}
             backend:
-              serviceName: "{{ include "matrix.fullname" . }}-synapse-workers"
+              serviceName: {{ include "matrix.fullname" . }}-synapse-workers
               servicePort: {{ .Values.synapseWorkers.service.port }}
           {{- end }}
     {{- end }}
