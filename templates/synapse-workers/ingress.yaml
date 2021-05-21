@@ -1,0 +1,49 @@
+{{- if and .Values.synapseWorkers.enabled .Values.ingress.enabled }}
+{{- if semverCompare ">=1.14-0" .Capabilities.KubeVersion.GitVersion -}}
+apiVersion: networking.k8s.io/v1beta1
+{{- else -}}
+apiVersion: extensions/v1beta1
+{{- end }}
+kind: Ingress
+metadata:
+  name: {{ include "matrix.fullname" . }}-workers
+  labels:
+    {{- include "matrix.labels" . | nindent 4 }}
+    {{ include "matrix.synapseWorkers.labels" . | indent 4}}
+  {{- with .Values.synapseWorkers.ingress.annotations }}
+  annotations:
+    {{- toYaml . | nindent 4 }}
+  {{- end }}
+spec:
+{{- if .Values.ingress.tls }}
+  tls:
+    {{- range .Values.ingress.tls }}
+    - secretName: {{ .secretName }}
+      hosts:
+      {{- range .hosts }}
+       - {{ . | quote }}
+      {{- end }}
+    {{- end }}
+{{- end }}
+  rules:
+    - host: {{ .Values.ingress.hosts.synapse }}
+      http:
+        paths:
+          {{- range .Values.synapseWorkers.ingress.generic_worker.client }}
+          - path: {{ . | quote }}
+            backend:
+              serviceName: "{{ include "matrix.fullname" . }}-synapse-workers"
+              servicePort: {{ .Values.synapseWorkers.service.port }}
+          {{- end }}
+    {{- if .Values.ingress.federation }}
+    - host: {{ .Values.ingress.hosts.federation }}
+      http:
+        paths:
+          {{- range .Values.synapseWorkers.ingress.generic_worker.federation }}
+          - path: {{ . | quote }}
+            backend:
+              serviceName: "{{ include "matrix.fullname" . }}-synapse-workers"
+              servicePort: {{ .Values.synapseWorkers.service.port }}
+          {{- end }}
+    {{- end }}
+{{- end }}
