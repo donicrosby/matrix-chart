@@ -64,6 +64,7 @@ spec:
           image: "{{ .Values.synapse.image.repository }}:{{ .Values.synapse.image.tag }}"
           imagePullPolicy: {{ .Values.synapse.image.pullPolicy }}
           args:
+            - "run"
             - "--config"
             - "/worker/worker_config.yaml"
             - "--config"
