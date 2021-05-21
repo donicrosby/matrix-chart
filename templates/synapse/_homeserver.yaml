@@ -233,7 +233,7 @@ listeners:
 {{- end }}
 {{- if .Values.synapseWorkers.enabled }}
   - port: {{ .Values.synapseWorkers.homeserverReplicationPort }}
-    bind_address: ['0.0.0.0']
+    bind_address: '0.0.0.0'
     type: http
     resources:
      - names: [replication]
