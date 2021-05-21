@@ -1,3 +1,4 @@
+{{- if .Values.synapseWorkers.enabled }}
 apiVersion: v1
 kind: ConfigMap
 metadata:
@@ -7,3 +8,4 @@ metadata:
 {{ include "matrix.synapseWorkers.labels" . | nindent 4}}
 data:
 {{ (.Files.Glob "synapse_worker_init/*").AsConfig | indent 2 }}
+{{- end }}
