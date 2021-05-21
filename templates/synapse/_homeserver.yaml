@@ -2289,7 +2289,7 @@ opentracing:
 {{- if .Values.synapseWorkers.enabled }}
 listeners:
   # The HTTP replication port
-  - port: {{ .Values.synapseWorkers.homeseverReplicationPort }}
+  - port: {{ .Values.synapseWorkers.homeserverReplicationPort }}
     bind_address: '0.0.0.0'
     type: http
     resources:
