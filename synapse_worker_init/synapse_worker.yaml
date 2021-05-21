@@ -9,7 +9,7 @@ worker_listeners:
    port: {{ port }}
 {% if listener_resources %}
     resources:
-      - names:
+      - names: 
 {% for resource in listener_resources %}
           - {{ resource }}
 {% endfor %}
