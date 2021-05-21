@@ -317,7 +317,7 @@ synapse:
 synapseWorkers:
   enabled: true
 
-  homeseverReplicationPort: 9093
+  homeserverReplicationPort: 9093
 
   sharedSecret: ""
 

@@ -41,6 +41,8 @@ spec:
               value: synapse.app.generic_worker
             - name: SYNAPSE_HOST
               value: "{{ include "matrix.fullname" . }}-synapse"
+            - name: SYNAPSE_REPLICATON_PORT
+              value: "{{ .Values.synapseWorkers.homeserverReplicationPort }}"
             - name: SYNAPSE_HOST_NAME
               value: "{{ .Values.matrix.serverName }}"
             - name: WORKER_CONFIG_GEN

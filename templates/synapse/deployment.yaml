@@ -76,7 +76,7 @@ spec:
             {{- end }}
             {{- if .Values.synapseWorkers.enabled }}
             - name: replication
-              containerPort: {{ .Values.synapseWorkers.homeseverReplicationPort }}
+              containerPort: {{ .Values.synapseWorkers.homeserverReplicationPort }}
               protocol: TCP
             {{- end }}
           volumeMounts:
