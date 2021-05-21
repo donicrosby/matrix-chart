@@ -74,6 +74,11 @@ spec:
               containerPort: {{ .Values.synapse.metrics.port }}
               protocol: TCP
             {{- end }}
+            {{- if .Values.synapseWorkers.enabled }}
+            - name: replication
+              containerPort: {{ .Values.synapseWorkers.homeseverReplicationPort }}
+              protocol: TCP
+            {{- end }}
           volumeMounts:
             - name: synapse-config
               mountPath: /data

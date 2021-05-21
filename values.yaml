@@ -317,6 +317,8 @@ synapse:
 synapseWorkers:
   enabled: true
 
+  homeseverReplicationPort: 9093
+
   sharedSecret: ""
 
   redis:

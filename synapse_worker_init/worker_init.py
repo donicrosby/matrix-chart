@@ -35,6 +35,7 @@ def generate_generic_worker_config(environ,
                                    app,
                                    name,
                                    host,
+                                   host_port,
                                    port,
                                    server_name):
     listener_resources = ["client", "federation"]
@@ -43,6 +44,7 @@ def generate_generic_worker_config(environ,
         "app": app,
         "name": name,
         "host": host,
+        "host_port": host_port,
         "port": port,
         "server_name": server_name,
         "listener_resources": listener_resources,
@@ -70,6 +72,7 @@ Synapse host not set
 The worker must have a the local synapse instance passed to it via the
 environment in order for it to function
 """)
+    host_port = environ.get("SYNAPSE_REPLICATON_PORT", 9093)
     server_name = environ.get("SYNAPSE_HOST_NAME")
     if server_name is None:
         error("""\
@@ -83,7 +86,8 @@ environment in order for it to function
 
     if app == "synapse.app.generic_worker":
         generate_generic_worker_config(environ, worker_config,
-                                       app, name, host, port, server_name)
+                                       app, name, host,
+                                       host_port, port, server_name)
     else:
         error("""\
 Synapse worker type is currently not supported or is unknown

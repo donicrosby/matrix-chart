@@ -24,6 +24,12 @@ spec:
       protocol: TCP
       name: metrics
     {{- end }}
+    {{- if .Values.synapseWorkers.enabled }}
+    - port: {{ .Values.synapseWorkers.homeseverReplicationPort }}
+      targetPort: replication
+      protocol: TCP
+      name: replication
+    {{- end }}
   selector:
     app.kubernetes.io/name: {{ include "matrix.name" . }}-synapse
     app.kubernetes.io/instance: {{ .Release.Name }}
