@@ -51,7 +51,7 @@ def generate_generic_worker_config(environ,
     convert("/templates/synapse_worker.yaml", config_path, volitile_values)
     with open(config_path, 'r') as f:
         for i, line in enumerate(f, start=1):
-            print('{} = {}'.format(i, line.strip()))
+            print('{} = {}'.format(i, line)
 
 
 def run_create_worker_config(environ, ownership):
