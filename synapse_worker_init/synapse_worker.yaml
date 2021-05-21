@@ -11,7 +11,7 @@ worker_listeners:
     resources:
       - names:
 {% for resource in listener_resources %}
-        - {{ resource }}
+          - {{ resource }}
 {% endfor %}
 {% endif %}
 
