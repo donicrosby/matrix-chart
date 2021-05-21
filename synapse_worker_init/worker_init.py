@@ -61,13 +61,15 @@ The worker must have a name passed to it via the environment in order
 for it to function
 """)
     host = environ.get("SYNAPSE_HOST")
-    error("""\
+    if host is None:
+        error("""\
 Synapse host not set
 The worker must have a the local synapse instance passed to it via the
 environment in order for it to function
 """)
     server_name = environ.get("SYNAPSE_HOST_NAME")
-    error("""\
+    if server_name is None:
+        error("""\
 Synapse host name not set
 The worker must have a the local synapse's hostname passed to it via the
 environment in order for it to function
