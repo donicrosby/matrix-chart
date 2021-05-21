@@ -50,7 +50,7 @@ spec:
                 fieldRef:
                   fieldPath: metadata.name
             - name: WORKER_PORT
-              value: {{ .Values.synapseWorkers.service.port }}
+              value: {{ .Values.synapseWorkers.service.port | quote }}
           command: ["python"]
           args:
             - /templates/worker_init.py
