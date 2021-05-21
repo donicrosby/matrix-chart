@@ -39,12 +39,18 @@ spec:
           env:
             - name: SYNAPSE_WORKER
               value: synapse.app.generic_worker
+            - name: SYNAPSE_HOST
+              value: "{{ include "matrix.fullname" . }}-synapse"
+            - name: SYNAPSE_HOST_NAME
+              value: "{{ .Values.matrix.serverName }}"
             - name: WORKER_CONFIG_GEN
               value: /worker-gen
             - name: WORKER_NAME
               valueFrom:
                 fieldRef:
                   fieldPath: metadata.name
+            - name: WORKER_PORT
+              value: {{ .Values.synapseWorkers.port }}
           command: ["python"]
           args:
             - /templates/worker_init.py

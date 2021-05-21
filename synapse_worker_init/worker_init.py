@@ -30,12 +30,21 @@ def convert(src, dst, environ):
         outfile.write(rendered)
 
 
-def generate_generic_worker_config(environ, config_path, app, name):
+def generate_generic_worker_config(environ,
+                                   config_path,
+                                   app,
+                                   name,
+                                   host,
+                                   port,
+                                   server_name):
     listener_resources = ["client", "federation"]
 
     volitile_values = {
         "app": app,
         "name": name,
+        "host": host,
+        "port": port,
+        "server_name": server_name,
         "listener_resources": listener_resources,
     }
 
@@ -51,11 +60,25 @@ Worker name not set
 The worker must have a name passed to it via the environment in order
 for it to function
 """)
+    host = environ.get("SYNAPSE_HOST")
+    error("""\
+Synapse host not set
+The worker must have a the local synapse instance passed to it via the
+environment in order for it to function
+""")
+    server_name = environ.get("SYNAPSE_HOST_NAME")
+    error("""\
+Synapse host name not set
+The worker must have a the local synapse's hostname passed to it via the
+environment in order for it to function
+""")
     worker_config = config_dir + "/worker_config.yaml"
     app = environ.get("SYNAPSE_WORKER", "synapse.app.generic_worker")
+    port = environ.get("WORKER_PORT", 8008)
 
     if app == "synapse.app.generic_worker":
-        generate_generic_worker_config(environ, worker_config, app, name)
+        generate_generic_worker_config(environ, worker_config,
+                                       app, name, host, port, server_name)
     else:
         error("""\
 Synapse worker type is currently not supported or is unknown

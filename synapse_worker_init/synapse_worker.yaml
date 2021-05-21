@@ -1,0 +1,18 @@
+worker_app: {{ app }}
+worker_name: {{ name }}
+
+# The replication listener on the main synapse process.
+worker_replication_host: "{{ host }}"
+
+worker_listeners:
+ - type: http
+   port: {{ port }}
+{% if listener_resources %}
+    resources:
+      - names:
+{% for resource in listener_resources %}
+        - {{ resource }}
+{% endfor %}
+{% endif %}
+
+worker_log_config: /data/{{ server_name }}.log.config

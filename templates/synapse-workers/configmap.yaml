@@ -6,6 +6,4 @@ metadata:
 {{ include "matrix.labels" . | nindent 4}}
 {{ include "matrix.synapseWorkers.labels" . | nindent 4}}
 data:
-  synapse_worker.yaml: |
-    {{ include "synapse_worker.yaml" . | nindent 4 }}
-{{ (.Files.Glob "synapse_worker_init/worker_init.py").AsConfig | indent 2 }}
+{{ (.Files.Glob "synapse_worker_init/*").AsConfig | indent 2 }}
