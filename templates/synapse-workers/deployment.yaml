@@ -66,9 +66,9 @@ spec:
           command: ["/start.py"]
           args:
             - "run"
-            - "--config"
+            - "--config-path"
             - "/worker/worker_config.yaml"
-            - "--config"
+            - "--config-path"
             - "/data/homeserver.yaml"
           env:
             - name: UID
