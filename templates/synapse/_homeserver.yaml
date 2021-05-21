@@ -2288,7 +2288,7 @@ opentracing:
 
 {{- if .Values.synapseWorkers.enabled }}
 # Add a random shared secret to authenticate traffic.
-worker_replication_secret: "{{ matrix.synapseWorkers.sharedSecret }}"
+worker_replication_secret: "{{ .Values.synapseWorkers.sharedSecret }}"
 
 redis:
     enabled: true
