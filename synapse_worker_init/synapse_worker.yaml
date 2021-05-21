@@ -8,7 +8,7 @@ worker_name: "{{ name }}"
 
 # The replication listener on the main synapse process.
 worker_replication_host: {{ host }}
-worker_replication_http_port: {{ replication_port }}
+worker_replication_http_port: {{ host_port }}
 
 
 worker_listeners:
