@@ -322,6 +322,7 @@ synapseWorkers:
   redis:
     host: redis.chart-example.local
     port: 6379
+    pasword: ""
 
   replicaCount: 3
 
