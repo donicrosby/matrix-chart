@@ -94,13 +94,13 @@ data:
       usernamePattern: {{ .Values.bridges.discord.users.username | quote }}
   registration.yaml: |
     id: appservice-discord
-    {{- if .Values.bridges.discord.auth.as_token }}
-    as_token: {{ .Values.bridges.discord.auth.as_token | quote }}
+    {{- if .Values.bridges.discord.auth.asToken }}
+    as_token: {{ .Values.bridges.discord.auth.asToken | quote }}
     {{- else }}
     as_token: "{{ include "matrix.discord.as_token" . }}"
     {{- end }}
-    {{- if .Values.bridges.discord.auth.hs_token }}
-    hs_token: {{ .Values.bridges.discord.auth.hs_token | quote }}
+    {{- if .Values.bridges.discord.auth.hsToken }}
+    hs_token: {{ .Values.bridges.discord.auth.hsToken | quote }}
     {{- else }}
     hs_token: "{{ include "matrix.discord.hs_token" . }}"
     {{- end }}
