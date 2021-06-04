@@ -67,7 +67,7 @@ spec:
             capabilities:
               drop:
                 - ALL
-            readOnlyRootFilesystem: false
+            readOnlyRootFilesystem: true
             allowPrivilegeEscalation: false
         - name: "generate-config"
           image: "{{ .Values.bridges.signal.image.bridge.repository }}:{{ .Values.bridges.signal.image.bridge.tag }}"
@@ -112,7 +112,7 @@ spec:
             capabilities:
               drop:
                 - ALL
-            readOnlyRootFilesystem: true
+            readOnlyRootFilesystem: false
             allowPrivilegeEscalation: false
           {{- with .Values.bridges.signal.image.bridge.resources }}
           resources:
@@ -130,7 +130,7 @@ spec:
             capabilities:
               drop:
                 - ALL
-            readOnlyRootFilesystem: true
+            readOnlyRootFilesystem: false
             allowPrivilegeEscalation: false
           {{- with .Values.bridges.signal.image.signald.resources }}
           resources:
