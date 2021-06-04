@@ -94,7 +94,7 @@ spec:
           image: "{{ .Values.bridges.signal.image.bridge.repository }}:{{ .Values.bridges.signal.bridge.image.tag }}"
           imagePullPolicy: {{ .Values.bridges.signal.image.bridge.pullPolicy }}
           command: ["python3"]
-          args: ["-m", "mautrix_signal", "-c", "/data/config.yaml"]
+          args: ["-m", "mautrix_signal", "-c", "/signald/config.yaml"]
           ports:
             - name: bridge
               containerPort: 29328
