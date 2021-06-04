@@ -871,12 +871,12 @@ bridges:
 
     image:
       signald:
-        repository: "halfshot/matrix-appservice-discord"
+        repository: "finn/signald"
         tag: "latest"
         pullPolicy: Always
         resources: {}
       bridge:
-        repository: "halfshot/matrix-appservice-discord"
+        repository: "dock.mau.dev/tulir/mautrix-signal"
         tag: "latest"
         pullPolicy: Always
         resources: {}
