@@ -115,7 +115,7 @@ spec:
             {{- toYaml . | nindent 12 }}
           {{- end }}
       - name: "signald"
-        image: "{{ .Values.bridges.signal.image.signald.repository }}:{{ .Values.bridges.signal.signald.image.tag }}"
+        image: "{{ .Values.bridges.signal.image.signald.repository }}:{{ .Values.bridges.signal.image.signald.tag }}"
         imagePullPolicy: {{ .Values.bridges.signal.image.signald.pullPolicy }}
         volumeMounts:
           - name: data
