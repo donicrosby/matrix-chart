@@ -114,24 +114,24 @@ spec:
           resources:
             {{- toYaml . | nindent 12 }}
           {{- end }}
-      - name: "signald"
-        image: "{{ .Values.bridges.signal.image.signald.repository }}:{{ .Values.bridges.signal.image.signald.tag }}"
-        imagePullPolicy: {{ .Values.bridges.signal.image.signald.pullPolicy }}
-        volumeMounts:
-          - name: data
-            mountPath: /signald
-          - name: tmp
-            mountPath: /signald/attachments
-        securityContext:
-          capabilities:
-            drop:
-              - ALL
-          readOnlyRootFilesystem: true
-          allowPrivilegeEscalation: false
-        {{- with .Values.bridges.signal.image.signald.resources }}
-        resources:
-          {{- toYaml . | nindent 12 }}
-        {{- end }}
+        - name: "signald"
+          image: "{{ .Values.bridges.signal.image.signald.repository }}:{{ .Values.bridges.signal.image.signald.tag }}"
+          imagePullPolicy: {{ .Values.bridges.signal.image.signald.pullPolicy }}
+          volumeMounts:
+            - name: data
+              mountPath: /signald
+            - name: tmp
+              mountPath: /signald/attachments
+          securityContext:
+            capabilities:
+              drop:
+                - ALL
+            readOnlyRootFilesystem: true
+            allowPrivilegeEscalation: false
+          {{- with .Values.bridges.signal.image.signald.resources }}
+          resources:
+            {{- toYaml . | nindent 12 }}
+          {{- end }}
       volumes:
         - name: data
           persistentVolumeClaim:
