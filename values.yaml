@@ -736,6 +736,8 @@ bridges:
     auth:
       clientId: ""
       botToken: ""
+      asToken: ""
+      hsToken: ""
 
     # The name of bridged rooms
     # Available vars:
@@ -792,6 +794,97 @@ bridges:
     service:
       type: ClusterIP
       port: 9005
+
+  signal:
+    # Set to true to enable the Signal bridge
+    enabled: false
+    # Useranme for the bridge bot on the server
+    bot:
+      user: "signal_bot"
+      displayName: "Signal bridge bot"
+      avatar: "mxc://maunium.net/wPJgTQbZOtpBFmDNkiNEMDUp"
+
+    #Connection string to the database
+    connString: ""
+
+    metrics: false
+
+    users:
+      # Localpart template of MXIDs for Signal users.
+      # {userid} is replaced with an identifier for the Signal user.
+      usernameTemplate: "signal_{userid}"
+      # Displayname template for Signal users.
+      # {displayname} is replaced with the displayname of the Signal user, which is the first
+      # available variable in displayname_preference. The variables in displayname_preference
+      # can also be used here directly.
+      displaynameTemplate: "{displayname} (Signal)"
+      # Whether or not contact list displaynames should be used.
+      # Possible values: disallow, allow, prefer
+      #
+      # Multi-user instances are recommended to disallow contact list names, as otherwise there can
+      # be conflicts between names from different users' contact lists.
+      contactListNames: disallow
+      # Available variables: full_name, first_name, last_name, phone, uuid
+      displaynamePreference:
+      - full_name
+      - phone
+
+    # Whether or not to create portals for all groups on login/connect.
+    autocreateGroupPortal: true
+    # Whether or not to create portals for all contacts on login/connect.
+    autocreateContactPortal: false
+    # Whether or not to use /sync to get read receipts and typing notifications
+    # when double puppeting is enabled
+    syncWithCustomPuppets: true
+    # Whether or not created rooms should have federation enabled.
+    # If false, created portal rooms will never be federated.
+    federateRooms: true
+
+    encryption:
+      # Allow encryption, work in group chat rooms with e2ee enabled
+      allow: true
+      # Default to encryption, force-enable encryption in all portals the bridge creates
+      # This will cause the bridge bot to be in private chats for the encryption to work properly.
+      default: false
+      keySharing:
+        # Enable key sharing? If enabled, key requests for rooms where users are in will be fulfilled.
+        # You must use a client that supports requesting keys from other users to use this feature.
+        allow: true
+
+    # Permissions for using the bridge.
+    # Permitted values:
+    #       user - Use the bridge with puppeting.
+    #      admin - Use and administrate the bridge.
+    # Permitted keys:
+    #        * - All Matrix users
+    #   domain - All users on that homeserver
+    #     mxid - Specific user
+    permissions:
+        "example.com": "user"
+        "@admin:example.com": "admin"
+
+    data:
+      # Size of the PVC to allocate for the SQLite database
+      capacity: 512Mi
+      # Storage class (optional)
+      storageClass: ""
+
+    image:
+      signald:
+        repository: "finn/signald"
+        tag: "latest"
+        pullPolicy: Always
+        resources: {}
+      bridge:
+        repository: "dock.mau.dev/tulir/mautrix-signal"
+        tag: "latest"
+        pullPolicy: Always
+        resources: {}
+    replicaCount: 1
+    resources: {}
+    service:
+      type: ClusterIP
+      port: 29328
   # Recommended to leave this disabled to allow bridges to be scheduled on separate nodes.
   # Set this to true to reduce latency between the homeserver and bridges, or if your cloud provider does not allow
   # the ReadWriteMany access mode (see below)
