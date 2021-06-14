@@ -1,0 +1,84 @@
+{{- if .Values.bridges.signal.enabled }}
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: {{ include "matrix.fullname" . }}-bridge-signal-generate-config
+  labels:
+{{ include "matrix.labels" . | indent 4 }}
+  annotations:
+    "helm.sh/hook": post-install,post-upgrade
+    "helm.sh/hook-weight": "0"
+    "helm.sh/hook-delete-policy": hook-succeeded
+spec:
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: {{ include "matrix.name" . }}-bridge-signal-generate-config
+        app.kubernetes.io/instance: {{ .Release.Name }}
+        matrix-chart/allow-synapse-access: allow
+    spec:
+      {{- with .Values.imagePullSecrets }}
+      imagePullSecrets:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      securityContext:
+        runAsUser: 1000
+        runAsGroup: 1000
+        fsGroup: 1000
+      initContainers:
+        - name: "load-config"
+          image: "{{ .Values.bridges.signal.image.bridge.repository }}:{{ .Values.bridges.signal.image.bridge.tag }}"
+          imagePullPolicy: {{ .Values.bridges.signal.image.bridge.pullPolicy }}
+          command: ["sh"]
+          args: ["-c", "cp /load/config.yaml /data/config.yaml"]
+          volumeMounts:
+            - name: data
+              mountPath: /data
+            - name: config
+              mountPath: /load
+              readOnly: true
+          securityContext:
+            capabilities:
+              drop:
+                - ALL
+            readOnlyRootFilesystem: true
+            allowPrivilegeEscalation: false
+      containers:
+        - name: "generate-config"
+          image: "{{ .Values.bridges.signal.image.bridge.repository }}:{{ .Values.bridges.signal.image.bridge.tag }}"
+          imagePullPolicy: {{ .Values.bridges.signal.image.bridge.pullPolicy }}
+          command: ["python3"]
+          args: ["-m", "mautrix_signal", "-g", "-c", "/data/config.yaml", "-r", "/bridges/signal.yaml"]
+          volumeMounts:
+            - name: data
+              mountPath: /data
+            - name: bridges
+              mountPath: /bridges
+            - name: logs
+              mountPath: /opt/mautrix-signal
+          securityContext:
+            capabilities:
+              drop:
+                - ALL
+            readOnlyRootFilesystem: false
+            allowPrivilegeEscalation: false
+          {{- with .Values.bridges.signal.image.bridge.resources }}
+          resources:
+            {{- toYaml . | nindent 12 }}
+          {{- end }}
+      volumes:
+        - name: data
+          persistentVolumeClaim:
+            claimName: "{{ include "matrix.fullname" . }}-signal-data"
+        - name: config
+          configMap:
+            name: "{{ include "matrix.fullname" . }}-signal-config"
+        - name: bridges
+          persistentVolumeClaim:
+            claimName: "{{ include "matrix.fullname" . }}-bridges"
+        - name: tmp
+          emptyDir:
+            medium: Memory
+        - name: logs
+          emptyDir: {}
+{{- end }}

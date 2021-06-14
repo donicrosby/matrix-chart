@@ -51,46 +51,6 @@ spec:
         runAsUser: 1000
         runAsGroup: 1000
         fsGroup: 1000
-      initContainers:
-        - name: "load-config"
-          image: "{{ .Values.bridges.signal.image.bridge.repository }}:{{ .Values.bridges.signal.image.bridge.tag }}"
-          imagePullPolicy: {{ .Values.bridges.signal.image.bridge.pullPolicy }}
-          command: ["sh"]
-          args: ["-c", "cp /load/config.yaml /data/config.yaml"]
-          volumeMounts:
-            - name: data
-              mountPath: /data
-            - name: config
-              mountPath: /load
-              readOnly: true
-          securityContext:
-            capabilities:
-              drop:
-                - ALL
-            readOnlyRootFilesystem: true
-            allowPrivilegeEscalation: false
-        - name: "generate-config"
-          image: "{{ .Values.bridges.signal.image.bridge.repository }}:{{ .Values.bridges.signal.image.bridge.tag }}"
-          imagePullPolicy: {{ .Values.bridges.signal.image.bridge.pullPolicy }}
-          command: ["python3"]
-          args: ["-m", "mautrix_signal", "-g", "-c", "/data/config.yaml", "-r", "/bridges/signal.yaml"]
-          volumeMounts:
-            - name: data
-              mountPath: /data
-            - name: bridges
-              mountPath: /bridges
-            - name: logs
-              mountPath: /opt/mautrix-signal
-          securityContext:
-            capabilities:
-              drop:
-                - ALL
-            readOnlyRootFilesystem: false
-            allowPrivilegeEscalation: false
-          {{- with .Values.bridges.signal.image.bridge.resources }}
-          resources:
-            {{- toYaml . | nindent 12 }}
-          {{- end }}
       containers:
         - name: "bridge-signal"
           image: "{{ .Values.bridges.signal.image.bridge.repository }}:{{ .Values.bridges.signal.image.bridge.tag }}"
