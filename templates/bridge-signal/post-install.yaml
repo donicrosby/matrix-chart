@@ -17,6 +17,7 @@ spec:
         app.kubernetes.io/instance: {{ .Release.Name }}
         matrix-chart/allow-synapse-access: allow
     spec:
+      restartPolicy: Never
       {{- with .Values.imagePullSecrets }}
       imagePullSecrets:
         {{- toYaml . | nindent 8 }}
