@@ -829,6 +829,10 @@ bridges:
       - full_name
       - phone
 
+    # Whether or not to receive ephemeral events via appservice transactions.
+    # Requires MSC2409 support (i.e. Synapse 1.22+).
+    # You should disable bridge -> sync_with_custom_puppets when this is enabled.
+    ephemeralEvents: false
     # Whether or not to create portals for all groups on login/connect.
     autocreateGroupPortal: true
     # Whether or not to create portals for all contacts on login/connect.
