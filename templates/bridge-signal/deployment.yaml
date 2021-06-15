@@ -67,7 +67,7 @@ spec:
             - name: tmp
               mountPath: /signald/attachments
             - name: logs
-              mountPath: /opt/mautrix-signal
+              mountPath: /opt/mautrix-signal/logs
           securityContext:
             capabilities:
               drop:
