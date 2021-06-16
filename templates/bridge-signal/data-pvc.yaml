@@ -10,7 +10,7 @@ spec:
   storageClassName: {{ .Values.bridges.signal.data.storageClass }}
   {{- end }}
   accessModes:
-    - ReadWriteOnce
+    - ReadWriteMany
   resources:
     requests:
       storage: {{ .Values.bridges.signal.data.capacity }}
