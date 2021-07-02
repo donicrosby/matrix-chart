@@ -2,7 +2,7 @@
 {{- $svcPort := .Values.synapseWorkers.service.port  -}}
 {{- if and .Values.synapseWorkers.enabled .Values.ingress.enabled }}
 {{- if semverCompare ">=1.14-0" .Capabilities.KubeVersion.GitVersion -}}
-apiVersion: networking.k8s.io/v1beta1
+apiVersion: networking.k8s.io/v1
 {{- else -}}
 apiVersion: extensions/v1beta1
 {{- end }}
@@ -30,13 +30,16 @@ spec:
     {{- end }}
 {{- end }}
   rules:
-    - host: {{ .Values.ingress.hosts.synapse }}
+    - host: {{ .Values.ingress.hosts.federation }}
       http:
         paths:
           {{- range .Values.synapseWorkers.ingress.generic_worker.federation.send }}
-          - path: {{ . | quote }}
+          - pathType: Prefix
+            path: {{ . | quote }}
             backend:
-              serviceName: "{{ $fullName }}-synapse-workers"
-              servicePort: {{ $svcPort }}
+              service:
+                name: "{{ $fullName }}-synapse-workers"
+                port:
+                  number: {{ $svcPort }}
           {{- end }}
 {{- end }}

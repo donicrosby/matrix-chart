@@ -32,20 +32,26 @@ spec:
       http:
         paths:
           {{- range .Values.synapseWorkers.ingress.generic_worker.client.common }}
-          - path: {{ . | quote }}
+          - pathType: Prefix
+            path: {{ . | quote }}
             backend:
-              serviceName: "{{ $fullName }}-synapse-workers"
-              servicePort: {{ $svcPort }}
+              service:
+                name: "{{ $fullName }}-synapse-workers"
+                port:
+                  number: {{ $svcPort }}
           {{- end }}
     {{- if .Values.ingress.federation }}
     - host: {{ .Values.ingress.hosts.federation }}
       http:
         paths:
           {{- range .Values.synapseWorkers.ingress.generic_worker.federation.common }}
-          - path: {{ . | quote }}
+          - pathType: Prefix
+            path: {{ . | quote }}
             backend:
-              serviceName: "{{ $fullName }}-synapse-workers"
-              servicePort: {{ $svcPort }}
+              service:
+                name: "{{ $fullName }}-synapse-workers"
+                port:
+                  number: {{ $svcPort }}
           {{- end }}
     {{- end }}
 {{- end }}
