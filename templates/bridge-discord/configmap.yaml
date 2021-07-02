@@ -38,11 +38,21 @@ data:
     auth:
       clientID: {{ .Values.bridges.discord.auth.clientId | quote }}
       botToken: {{ .Values.bridges.discord.auth.botToken | quote }}
+      shards: 1
     logging:
       # What level should the logger output to the console at.
       console: "warn" #silly, verbose, info, http, warn, error, silent
       lineDateFormat: "MMM-D HH:mm:ss.SSS" # This is in moment.js format
-      files: []
+      files:
+        - file: "/data/logs/debug.log"
+          disable:
+            - "PresenceHandler" # Will not capture presence logging
+        - file: "/data/logs/warn.log" # Will capture warnings
+          level: "warn"
+        - file: "/data/logs/botlogs.log" # Will capture logs from DiscordBot
+          level: "info"
+          enable:
+            - "DiscordBot"
     database:
       # You may either use SQLite or Postgresql for the bridge database, which contains
       # important mappings for events and user puppeting configurations.
