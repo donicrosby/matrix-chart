@@ -786,7 +786,7 @@ bridges:
       storageClass: ""
 
     image:
-      repository: "halfshot/matrix-appservice-discord"
+      repository: "t2bot/matrix-appservice-discord"
       tag: "latest"
       pullPolicy: Always
     replicaCount: 1
