@@ -2300,14 +2300,14 @@ opentracing:
 # Add a random shared secret to authenticate traffic.
 worker_replication_secret: "{{ .Values.synapseWorkers.sharedSecret }}"
 
-{{- if .Values.synapseWorkers.federationSend.enabled }}
+{{ if .Values.synapseWorkers.federationSend.enabled }}
 {{- $fullName := include "matrix.fullname" . -}}
 send_federation: False
 federation_sender_instances:
-{{ range $i, $e := until ( .Values.synapseWorkers.federationSend.replicaCount | int ) }}
+{{- range $i, $e := until ( .Values.synapseWorkers.federationSend.replicaCount | int ) }}
   - {{ $fullName }}-synapse-federation-sender-{{ $i }}
-{{ end }}
 {{- end }}
+{{ end }}
 
 
 redis:
