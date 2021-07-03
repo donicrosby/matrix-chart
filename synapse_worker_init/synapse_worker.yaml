@@ -10,10 +10,10 @@ worker_name: "{{ name }}"
 worker_replication_host: {{ host }}
 worker_replication_http_port: {{ host_port }}
 
-{% if listener_resources %}
 worker_listeners:
   - type: http
     port: {{ port }}
+{% if listener_resources %}
     resources:
       - names:
 {%- for resource in listener_resources %}

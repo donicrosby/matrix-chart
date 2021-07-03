@@ -30,6 +30,31 @@ def convert(src, dst, environ):
         outfile.write(rendered)
 
 
+def generate_federation_sender_worker_config(environ,
+                                             config_path,
+                                             app,
+                                             name,
+                                             host,
+                                             host_port,
+                                             port,
+                                             server_name):
+    listener_resources = []
+
+    volitile_values = {
+        "app": app,
+        "name": name,
+        "host": host,
+        "host_port": host_port,
+        "port": port,
+        "server_name": server_name,
+        "listener_resources": listener_resources,
+    }
+
+    convert("/templates/synapse_worker.yaml", config_path, volitile_values)
+    with open(config_path, 'r') as f:
+        for i, line in enumerate(f, start=1):
+            print('{} = {}'.format(i, line))
+
 def generate_generic_worker_config(environ,
                                    config_path,
                                    app,

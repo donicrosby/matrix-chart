@@ -1,0 +1,152 @@
+{{- if and .Values.synapseWorkers.enabled .Values.synapseWorkers.federationSend.enabled }}
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: {{ include "matrix.fullname" . }}-synapse-federation-sender
+  labels:
+{{ include "matrix.labels" . | indent 4 }}
+{{ include "matrix.synapseWorkers.labels" . | indent 4}}
+spec:
+  replicas: {{ .Values.synapseWorkers.federationSend.replicaCount }}
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: {{ include "matrix.name" . }}-synapse-federation-sender
+      app.kubernetes.io/instance: {{ .Release.Name }}
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      annotations:
+        # re-roll deployment on homeserver.yaml change
+        checksum/synapse-config: {{ include (print $.Template.BasePath "/synapse/configmap.yaml") . | sha256sum }}
+        checksum/synapse-worker-config: {{ include (print $.Template.BasePath "/synapse-workers/configmap.yaml") . | sha256sum }}
+      labels:
+        app.kubernetes.io/name: {{ include "matrix.name" . }}-synapse-federation-sender
+        app.kubernetes.io/instance: {{ .Release.Name }}
+    spec:
+      {{- with .Values.imagePullSecrets }}
+      imagePullSecrets:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      securityContext:
+        runAsUser: 1000
+        runAsGroup: 1000
+        fsGroup: 1000
+      initContainers:
+        - name: generate-synapse-worker-config
+          # Same synapse image
+          image: "{{ .Values.synapse.image.repository }}:{{ .Values.synapse.image.tag }}"
+          imagePullPolicy: {{ .Values.synapse.image.pullPolicy }}
+          env:
+            - name: SYNAPSE_WORKER
+              value: synapse.app.federation_sender
+            - name: SYNAPSE_HOST
+              value: "{{ include "matrix.fullname" . }}-synapse"
+            - name: SYNAPSE_REPLICATON_PORT
+              value: "{{ .Values.synapseWorkers.homeserverReplicationPort }}"
+            - name: SYNAPSE_HOST_NAME
+              value: "{{ .Values.matrix.serverName }}"
+            - name: WORKER_CONFIG_GEN
+              value: /worker-gen
+            - name: WORKER_NAME
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.name
+            - name: WORKER_PORT
+              value: {{ .Values.synapseWorkers.service.port | quote }}
+          command: ["python"]
+          args:
+            - /templates/worker_init.py
+          volumeMounts:
+            - name: worker-templates
+              mountPath: /templates
+            - name: worker-config
+              mountPath: /worker-gen
+      containers:
+        - name: "synapse-worker"
+          image: "{{ .Values.synapse.image.repository }}:{{ .Values.synapse.image.tag }}"
+          imagePullPolicy: {{ .Values.synapse.image.pullPolicy }}
+          command: ["/start.py"]
+          args:
+            - "run"
+            - "--config-path"
+            - "/data/homeserver.yaml"
+            - "--config-path"
+            - "/worker/worker_config.yaml"
+          env:
+            - name: UID
+              value: "1000"
+            - name: GID
+              value: "1000"
+            - name: SYNAPSE_WORKER
+              value: synapse.app.federation_sender
+          ports:
+            - name: http
+              containerPort: {{ .Values.synapseWorkers.service.port }}
+              protocol: TCP
+          volumeMounts:
+            - name: worker-config
+              mountPath: /worker
+            - name: synapse-config
+              mountPath: /data
+            - name: signing-key
+              mountPath: /data/keys
+            - name: media-store
+              mountPath: /data/media_store
+            {{- if or .Values.bridges.whatsapp.enabled .Values.bridges.discord.enabled .Values.bridges.irc.enabled }}
+            - name: bridges
+              mountPath: /bridges
+              readOnly: true
+            {{- end }}
+            - name: uploads
+              mountPath: /data/uploads
+            - name: tmp
+              mountPath: /tmp
+          readinessProbe:
+            httpGet:
+              path: /health
+              port: http
+          startupProbe:
+            httpGet:
+              path: /health
+              port: http
+          livenessProbe:
+            httpGet:
+              path: /health
+              port: http
+          securityContext:
+            capabilities:
+              drop:
+                - ALL
+            readOnlyRootFilesystem: true
+            allowPrivilegeEscalation: false
+          {{- with .Values.synapseWorkers.resources }}
+          resources:
+            {{- toYaml . | nindent 12 }}
+          {{- end }}
+      volumes:
+        - name: worker-templates
+          configMap:
+            name: {{ include "matrix.fullname" . }}-synapse-worker-templates
+        - name: worker-config
+          emptyDir: {}
+        - name: synapse-config
+          configMap:
+            name: {{ include "matrix.fullname" . }}-synapse-config
+        - name: signing-key
+          persistentVolumeClaim:
+            claimName: {{ include "matrix.fullname" . }}-signing-key
+        - name: media-store
+          persistentVolumeClaim:
+            claimName: {{ include "matrix.fullname" . }}-media-store
+        {{- if or .Values.bridges.whatsapp.enabled .Values.bridges.discord.enabled .Values.bridges.irc.enabled }}
+        - name: bridges
+          persistentVolumeClaim:
+            claimName: {{ include "matrix.fullname" . }}-bridges
+        {{- end }}
+        # Ephemeral in-progress uploads
+        - name: uploads
+          emptyDir: {}
+        - name: tmp
+          emptyDir: {}
+{{- end }}

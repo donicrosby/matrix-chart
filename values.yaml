@@ -319,6 +319,11 @@ synapseWorkers:
   # Create a separate deployment for client and federation generic worker URIs
   separate: false
 
+  # Enable the federation_send worker
+  federationSend:
+    enabled: false
+    replicaCount: 3
+
   homeserverReplicationPort: 9093
 
   sharedSecret: ""
