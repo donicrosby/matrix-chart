@@ -536,7 +536,7 @@ matrixRegistration:
   ingress:
     annotations: {}
 
-  # Element Kubernetes resource settings
+  # Matrix-Registration Kubernetes resource settings
   image:
     repository: "zeratax/matrix-registration"
     tag: v0.9.1.post1
@@ -652,6 +652,58 @@ mail:
     username: ""
     password: ""
     requireTransportSecurity: true
+
+bots:
+  # Mautrix MauBot Config
+  maubot:
+    # Set to true to enable MauBot
+    enabled: false
+
+    # PostgreSQL Database connection string
+    connectionString: ""
+
+    # Path on the synapse client ingress where the MauBot UI will be accessed
+    uiPath: /_matrix/maubot
+
+    # Username:Password pair for administrative access to the maubot UI
+    # NOTE: This is NOT your matrix server username and password they should be
+    #       unique to the maubot UI
+    admins:
+      maubot-admin: "superSecretPassword123@"
+
+    # MauBot API features
+    apiFeatures:
+      login: true
+      plugin: true
+      plugin_upload: true
+      instance: true
+      instance_database: true
+      client: true
+      client_proxy: true
+      client_auth: true
+      dev_open: true
+      log: true
+
+    data:
+      # Size of the PVC to allocate for the SQLite database
+      capacity: 512Mi
+      # Storage class (optional)
+      storageClass: ""
+
+    # MauBot Kubernetes resource settings
+    image:
+      repository: "dock.mau.dev/maubot/maubot"
+      tag: latest
+      pullPolicy: Always
+    service:
+      type: ClusterIP
+      port: 29316
+    replicaCount: 1
+    resources: {}
+    probes:
+      readiness: {}
+      startup: {}
+      liveness: {}
 
 bridges:
   irc:

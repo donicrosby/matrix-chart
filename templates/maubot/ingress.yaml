@@ -1,0 +1,40 @@
+{{- if and .Values.bots.maubot.enabled .Values.ingress.enabled }}
+{{- if semverCompare ">=1.14-0" .Capabilities.KubeVersion.GitVersion -}}
+apiVersion: networking.k8s.io/v1
+{{- else -}}
+apiVersion: extensions/v1beta1
+{{- end }}
+kind: Ingress
+metadata:
+  name: {{ include "matrix.fullname" . }}-maubot
+  labels:
+    {{ include "matrix.labels" . | nindent 4 }}
+  {{- if .Values.bots.maubot.ingress.annotations }}
+  annotations:
+    {{- toYaml .Values.bots.maubot.ingress.annotations | nindent 4 }}
+  {{- end }}
+spec:
+{{- if .Values.ingress.tls }}
+  tls:
+    {{- range .Values.ingress.tls }}
+    - secretName: {{ .secretName }}
+      hosts:
+      {{- range .hosts }}
+       - {{ . | quote }}
+      {{- end }}
+    {{- end }}
+{{- end }}
+  rules:
+    {{- if and Values.ingress.enabled .Values.bots.maubot.enabled }}
+    - host: {{ .Values.ingress.hosts.synapse }}
+      http:
+        paths:
+          - pathType: Prefix
+            path: "{{ .Values.bots.maubot.uiPath }}"
+            backend:
+              service:
+                name: "{{ include "matrix.fullname" . }}-maubot"
+                port:
+                  number: {{ .Values.bots.maubot.service.port }}
+    {{- end }}
+{{- end }}

@@ -1,0 +1,68 @@
+{{- if .Values.bots.maubot.enabled }}
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "matrix.fullname" . }}-maubot
+  labels:
+{{ include "matrix.labels" . | nindent 4 }}
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: {{ include "matrix.name" . }}-maubot
+      app.kubernetes.io/instance: {{ .Release.Name }}
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      annotations:
+        # re-roll deployment on homeserver.yaml change
+        checksum/synapse-config: {{ include (print $.Template.BasePath "/maubot/configmap.yaml") . | sha256sum }}
+      labels:
+        app.kubernetes.io/name: {{ include "matrix.name" . }}-maubot
+        app.kubernetes.io/instance: {{ .Release.Name }}
+    spec:
+      {{- with .Values.imagePullSecrets }}
+      imagePullSecrets:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      securityContext:
+        runAsUser: 1000
+        runAsGroup: 1000
+        fsGroup: 1000
+      initContainers:
+      containers:
+        - name: "maubot"
+          image: "{{ .Values.bots.maubot.image.repository }}:{{ .Values.bots.maubot.image.tag }}"
+          imagePullPolicy: {{ .Values.bots.maubot.image.pullPolicy }}
+          ports:
+            - name: http
+              containerPort: {{ .Values.bots.maubot.service.port }}
+              protocol: TCP
+          volumeMounts:
+            - name: maubot-config
+              mountPath: /data
+            - name: data
+              mountPath: /data
+            - name: logs
+              mountPath: /opt/maubot/logs
+          securityContext:
+            capabilities:
+              drop:
+                - ALL
+            readOnlyRootFilesystem: true
+            allowPrivilegeEscalation: false
+          {{- with .Values.bots.maubot.resources }}
+          resources:
+            {{- toYaml . | nindent 12 }}
+          {{- end }}
+      volumes:
+        - name: maubot-config
+          configMap:
+            name: {{ include "matrix.fullname" . }}-maubot-config
+        - name: data
+          persistentVolumeClaim:
+            claimName: {{ include "matrix.fullname" . }}-maubot-data
+        - name: logs
+          emptyDir: {}
+{{- end }}
