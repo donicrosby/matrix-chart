@@ -1,8 +1,8 @@
-{{- if .Values.synapseWorkers.enabled }}
+{{- if and .Values.synapseWorkers.enabled (not .Values.synapseWorkers.separate) }}
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: {{ include "matrix.fullname" . }}-synapse-workers
+  name: {{ include "matrix.fullname" . }}-synapse-generic-workers
   labels:
 {{ include "matrix.labels" . | indent 4 }}
 {{ include "matrix.synapseWorkers.labels" . | indent 4}}
@@ -10,7 +10,7 @@ spec:
   replicas: {{ .Values.synapseWorkers.replicaCount }}
   selector:
     matchLabels:
-      app.kubernetes.io/name: {{ include "matrix.name" . }}-synapse-workers
+      app.kubernetes.io/name: {{ include "matrix.name" . }}-synapse-generic-workers
       app.kubernetes.io/instance: {{ .Release.Name }}
   strategy:
     type: RollingUpdate
@@ -21,7 +21,7 @@ spec:
         checksum/synapse-config: {{ include (print $.Template.BasePath "/synapse/configmap.yaml") . | sha256sum }}
         checksum/synapse-worker-config: {{ include (print $.Template.BasePath "/synapse-workers/configmap.yaml") . | sha256sum }}
       labels:
-        app.kubernetes.io/name: {{ include "matrix.name" . }}-synapse-workers
+        app.kubernetes.io/name: {{ include "matrix.name" . }}-synapse-generic-workers
         app.kubernetes.io/instance: {{ .Release.Name }}
     spec:
       {{- with .Values.imagePullSecrets }}

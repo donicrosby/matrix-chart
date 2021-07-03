@@ -1,0 +1,33 @@
+{{- if and .Values.synapseWorkers.enabled | and .Values.synapseWorkers.autoscaling.enabled (not .Values.synapseWorkers.separate) }}
+apiVersion: autoscaling/v2beta2
+kind: HorizontalPodAutoscaler
+metadata:
+  labels:
+{{ include "matrix.labels" . | indent 4 }}
+{{ include "matrix.synapseWorkers.labels" . | indent 4}}
+  name: {{ include "matrix.fullname" . }}-synapse-generic-workers
+spec:
+  scaleTargetRef:
+    apiVersion: apps/v1
+    kind: Deployment
+    name: {{ include "matrix.fullname" . }}-synapse-generic-workers
+  minReplicas: {{ .Values.synapseWorkers.autoscaling.minReplicas }}
+  maxReplicas: {{ .Values.synapseWorkers.autoscaling.maxReplicas }}
+  metrics:
+  {{- with .Values.synapseWorkers.autoscaling.targetMemoryUtilizationPercentage }}
+  - type: Resource
+    resource:
+      name: memory
+      target:
+        type: Utilization
+        averageUtilization: {{ . }}
+  {{- end }}
+  {{- with .Values.synapseWorkers.autoscaling.targetCPUUtilizationPercentage }}
+  - type: Resource
+    resource:
+      name: cpu
+      target:
+        type: Utilization
+        averageUtilization: {{ . }}
+  {{- end }}
+{{- end }}

@@ -8,15 +8,15 @@ apiVersion: extensions/v1beta1
 {{- end }}
 kind: Ingress
 metadata:
-  name: {{ include "matrix.fullname" . }}-workers-rooms
+  name: {{ include "matrix.fullname" . }}-workers-sync
   labels:
     {{- include "matrix.labels" . | nindent 4 }}
     {{ include "matrix.synapseWorkers.labels" . | indent 4}}
 
-  {{- if or .Values.synapseWorkers.ingress.annotations.common .Values.synapseWorkers.ingress.annotations.rooms }}
+  {{- if or .Values.synapseWorkers.ingress.annotations.common .Values.synapseWorkers.ingress.annotations.sync }}
   annotations:
     {{- toYaml .Values.synapseWorkers.ingress.annotations.common | nindent 4 }}
-    {{- toYaml .Values.synapseWorkers.ingress.annotations.rooms | nindent 4 }}
+    {{- toYaml .Values.synapseWorkers.ingress.annotations.sync | nindent 4 }}
   {{- end }}
 spec:
 {{- if .Values.ingress.tls }}
@@ -33,12 +33,12 @@ spec:
     - host: {{ .Values.ingress.hosts.synapse }}
       http:
         paths:
-          {{- range .Values.synapseWorkers.ingress.generic_worker.client.rooms }}
+          {{- range .Values.synapseWorkers.ingress.genericWorker.client.sync }}
           - pathType: Prefix
             path: {{ . | quote }}
             backend:
               service:
-                name: "{{ $fullName }}-synapse-workers"
+                name: "{{ $fullName }}-synapse-client-workers"
                 port:
                   number: {{ $svcPort }}
           {{- end }}

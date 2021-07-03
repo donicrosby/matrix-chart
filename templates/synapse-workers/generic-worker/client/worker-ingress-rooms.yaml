@@ -8,13 +8,15 @@ apiVersion: extensions/v1beta1
 {{- end }}
 kind: Ingress
 metadata:
-  name: {{ include "matrix.fullname" . }}-workers
+  name: {{ include "matrix.fullname" . }}-workers-rooms
   labels:
     {{- include "matrix.labels" . | nindent 4 }}
     {{ include "matrix.synapseWorkers.labels" . | indent 4}}
-  {{- if .Values.synapseWorkers.ingress.annotations.common }}
+
+  {{- if or .Values.synapseWorkers.ingress.annotations.common .Values.synapseWorkers.ingress.annotations.rooms }}
   annotations:
     {{- toYaml .Values.synapseWorkers.ingress.annotations.common | nindent 4 }}
+    {{- toYaml .Values.synapseWorkers.ingress.annotations.rooms | nindent 4 }}
   {{- end }}
 spec:
 {{- if .Values.ingress.tls }}
@@ -31,27 +33,13 @@ spec:
     - host: {{ .Values.ingress.hosts.synapse }}
       http:
         paths:
-          {{- range .Values.synapseWorkers.ingress.generic_worker.client.common }}
+          {{- range .Values.synapseWorkers.ingress.genericWorker.client.rooms }}
           - pathType: Prefix
             path: {{ . | quote }}
             backend:
               service:
-                name: "{{ $fullName }}-synapse-workers"
+                name: "{{ $fullName }}-synapse-client-workers"
                 port:
                   number: {{ $svcPort }}
           {{- end }}
-    {{- if .Values.ingress.federation }}
-    - host: {{ .Values.ingress.hosts.federation }}
-      http:
-        paths:
-          {{- range .Values.synapseWorkers.ingress.generic_worker.federation.common }}
-          - pathType: Prefix
-            path: {{ . | quote }}
-            backend:
-              service:
-                name: "{{ $fullName }}-synapse-workers"
-                port:
-                  number: {{ $svcPort }}
-          {{- end }}
-    {{- end }}
 {{- end }}

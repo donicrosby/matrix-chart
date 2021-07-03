@@ -1,0 +1,43 @@
+{{- $fullName := include "matrix.fullname" . -}}
+{{- $svcPort := .Values.synapseWorkers.service.port  -}}
+{{- if and .Values.synapseWorkers.enabled .Values.ingress.enabled }}
+{{- if semverCompare ">=1.14-0" .Capabilities.KubeVersion.GitVersion -}}
+apiVersion: networking.k8s.io/v1
+{{- else -}}
+apiVersion: extensions/v1beta1
+{{- end }}
+kind: Ingress
+metadata:
+  name: {{ include "matrix.fullname" . }}-workers-client
+  labels:
+    {{- include "matrix.labels" . | nindent 4 }}
+    {{ include "matrix.synapseWorkers.labels" . | indent 4}}
+  {{- if .Values.synapseWorkers.ingress.annotations.common }}
+  annotations:
+    {{- toYaml .Values.synapseWorkers.ingress.annotations.common | nindent 4 }}
+  {{- end }}
+spec:
+{{- if .Values.ingress.tls }}
+  tls:
+    {{- range .Values.ingress.tls }}
+    - secretName: {{ .secretName }}
+      hosts:
+      {{- range .hosts }}
+       - {{ . | quote }}
+      {{- end }}
+    {{- end }}
+{{- end }}
+  rules:
+    - host: {{ .Values.ingress.hosts.synapse }}
+      http:
+        paths:
+          {{- range .Values.synapseWorkers.ingress.genericWorker.client.common }}
+          - pathType: Prefix
+            path: {{ . | quote }}
+            backend:
+              service:
+                name: "{{ $fullName }}-synapse-client-workers"
+                port:
+                  number: {{ $svcPort }}
+          {{- end }}
+{{- end }}

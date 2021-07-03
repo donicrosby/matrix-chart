@@ -33,12 +33,12 @@ spec:
     - host: {{ .Values.ingress.hosts.federation }}
       http:
         paths:
-          {{- range .Values.synapseWorkers.ingress.generic_worker.federation.send }}
+          {{- range .Values.synapseWorkers.ingress.genericWorker.federation.send }}
           - pathType: Prefix
             path: {{ . | quote }}
             backend:
               service:
-                name: "{{ $fullName }}-synapse-workers"
+                name: "{{ $fullName }}-synapse-federation-workers"
                 port:
                   number: {{ $svcPort }}
           {{- end }}

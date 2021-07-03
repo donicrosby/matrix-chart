@@ -316,6 +316,8 @@ synapse:
 # Configurations for Synapse Workers
 synapseWorkers:
   enabled: true
+  # Create a separate deployment for client and federation generic worker URIs
+  separate: false
 
   homeserverReplicationPort: 9093
 
@@ -368,7 +370,7 @@ synapseWorkers:
     # DO NOT EDIT THIS LIST UNLESS YOU KNOW WHAT YOU'RE DOING
     # IT FOLLOWS THE docs/worker.md SPEC
     #
-    generic_worker:
+    genericWorker:
       client:
         sync:
           - /_matrix/client/(v2_alpha|r0)/sync$
