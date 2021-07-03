@@ -13,7 +13,7 @@ spec:
       app.kubernetes.io/name: {{ include "matrix.name" . }}-matrix-registration
       app.kubernetes.io/instance: {{ .Release.Name }}
   strategy:
-    type: RollingUpdate
+    type: Recreate
   template:
     metadata:
       annotations:
