@@ -103,18 +103,6 @@ spec:
               mountPath: /data/uploads
             - name: tmp
               mountPath: /tmp
-          readinessProbe:
-            httpGet:
-              path: /health
-              port: http
-          startupProbe:
-            httpGet:
-              path: /health
-              port: http
-          livenessProbe:
-            httpGet:
-              path: /health
-              port: http
           securityContext:
             capabilities:
               drop:
