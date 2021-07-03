@@ -251,6 +251,10 @@ postgresql:
   password: matrix
   database: matrix
 
+  connpool:
+    cpMin: 5
+    cpMax: 10
+
   # Set this if postgresql.enabled = false
   hostname: ""
   port: 5432
