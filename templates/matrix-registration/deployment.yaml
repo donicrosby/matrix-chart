@@ -35,7 +35,7 @@ spec:
         - name: "load-config"
           image: "{{ .Values.matrixRegistration.image.repository }}:{{ .Values.matrixRegistration.image.tag }}"
           imagePullPolicy: {{ .Values.matrixRegistration.image.pullPolicy }}
-          command: ["sh"]
+          command: ["/bin/sh"]
           args: ["-c", "cp /load/config.yaml /data/config.yaml"]
           volumeMounts:
             - name: data
