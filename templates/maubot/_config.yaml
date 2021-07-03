@@ -26,7 +26,7 @@ plugin_directories:
     # The directories from which plugins should be loaded.
     # Duplicate plugin IDs will be moved to the trash.
     load:
-    - /data/plugins
+      - /data/plugins
     # The directory where old plugin versions and conflicting plugins should be moved.
     # Set to "delete" to delete files immediately.
     trash: /data/trash
