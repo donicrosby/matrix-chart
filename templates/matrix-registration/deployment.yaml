@@ -54,7 +54,6 @@ spec:
           image: "{{ .Values.matrixRegistration.image.repository }}:{{ .Values.matrixRegistration.image.tag }}"
           imagePullPolicy: {{ .Values.matrixRegistration.image.pullPolicy }}
           args:
-            - "--config-path=/data/config/config.yaml"
             - "serve"
           ports:
             - name: http
@@ -63,8 +62,6 @@ spec:
           volumeMounts:
             - name: data
               mountPath: /data
-            - name: config
-              mountPath: /data/config
           securityContext:
             capabilities:
               drop:
