@@ -113,7 +113,7 @@ environment in order for it to function
         generate_generic_worker_config(environ, worker_config,
                                        app, name, host,
                                        host_port, port, server_name)
-    elif app == "synapse.app.federation_send"
+    elif app == "synapse.app.federation_send":
         generate_federation_sender_worker_config(environ, worker_config,
                                                  app, name, host,
                                                  host_port, port, server_name)
