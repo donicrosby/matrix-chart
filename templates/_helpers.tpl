@@ -72,6 +72,15 @@ Element specific labels
 {{- end -}}
 
 {{/*
+Matrix Registration specific labels
+*/}}
+{{- define "matrix.matrixRegistration.labels" -}}
+{{- range $key, $val := .Values.matrixRegistration.labels -}}
+{{ $key }}: {{ $val }}
+{{- end }}
+{{- end -}}
+
+{{/*
 Coturn specific labels
 */}}
 {{- define "matrix.coturn.labels" -}}
@@ -114,6 +123,17 @@ Synapse hostname prepended with https:// to form a complete URL
 {{- printf "https://%s" .Values.matrix.hostname -}}
 {{- else }}
 {{- printf "https://%s" .Values.ingress.hosts.synapse -}}
+{{- end }}
+{{- end }}
+
+{{/*
+Synapse hostname prepended with https:// to form a complete URL
+*/}}
+{{- define "matrix.registration.sharedSecret" -}}
+{{- if .Values.matrix.registraton.sharedSecret }}
+{{- printf "%s" .Values.matrix.registraton.sharedSecret -}}
+{{- else }}
+{{- printf "%s" | randAlphaNum 64 -}}
 {{- end }}
 {{- end }}
 

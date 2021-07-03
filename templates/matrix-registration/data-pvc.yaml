@@ -1,0 +1,18 @@
+{{- if .Values.matrixRegistration.enabled }}
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: {{ include "matrix.fullname" . }}-matrix-registration-data
+  labels:
+{{ include "matrix.labels" . | nindent 4 }}
+{{ include "matrix.matrixRegistration.labels" . | nindent 4 }}
+spec:
+  {{- if .Values.matrixRegistration.data.storageClass }}
+  storageClassName: {{ .Values.matrixRegistration.data.storageClass }}
+  {{- end }}
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: {{ .Values.matrixRegistration.data.capacity }}
+{{- end }}

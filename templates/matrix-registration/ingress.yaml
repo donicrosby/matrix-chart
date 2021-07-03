@@ -1,0 +1,41 @@
+{{- if and .Values.matrixRegistration.enabled | and .Values.ingress.enabled .Values.riot.enabled }}
+{{- if semverCompare ">=1.14-0" .Capabilities.KubeVersion.GitVersion -}}
+apiVersion: networking.k8s.io/v1beta1
+{{- else -}}
+apiVersion: extensions/v1beta1
+{{- end }}
+kind: Ingress
+metadata:
+  name: {{ include "matrix.fullname" . }}-matrix-registration
+  labels:
+    {{ include "matrix.labels" . | nindent 4 }}
+    {{ include "matrix.matrixRegistration.labels" . | nindent 4 }}
+  {{- if .Values.matrixRegistration.ingress.annotations }}
+  annotations:
+    {{- toYaml .Values.matrixRegistration.ingress.annotations | nindent 4 }}
+  {{- end }}
+spec:
+{{- if .Values.riot.ingress.tls }}
+  tls:
+    {{- range .Values.riot.ingress.tls }}
+    - secretName: {{ .secretName }}
+      hosts:
+      {{- range .hosts }}
+        - {{ . | quote }}
+      {{- end }}
+    {{- end }}
+{{- end }}
+  rules:
+    {{- if and .Values.riot.enabled .Values.matrixRegistration.enabled }}
+    - host: {{ .Values.riot.ingress.host }}
+      http:
+        paths:
+          - pathType: Prefix
+            path: "/register"
+            backend:
+              service:
+                name: "{{ include "matrix.fullname" . }}-matrix-registration"
+                port:
+                  number: {{ .Values.matrixRegistration.service.port }}
+    {{- end }}
+{{- end }}

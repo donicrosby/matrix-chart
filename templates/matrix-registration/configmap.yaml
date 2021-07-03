@@ -1,0 +1,12 @@
+{{- if .Values.matrixRegistration.enabled }}
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ include "matrix.fullname" . }}-matrix-registration-config
+  labels:
+{{ include "matrix.labels" . | nindent 4 }}
+{{ include "matrix.matrixRegistration.labels" . | nindent 4 }}
+data:
+  config.yaml: |
+    {{ include "matrix-registration-config.yaml" . | nindent 4 }}
+{{- end }}

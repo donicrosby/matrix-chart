@@ -507,6 +507,60 @@ riot:
   labels:
     component: element
 
+# Settings for ZerataX's Matrix Registration Service
+matrixRegistration:
+  # Enable matrix-registraton service
+  enabled: false
+
+  # Shared secret to use to Authenticate with the API
+  # If one is not set, the chart will generate one at random
+  adminApiSharedSecret: ""
+
+  # Website to redirect the user
+  clientRedirect: "https://element.chart-example.local/#/login"
+
+  # Set the minimum password length
+  passwordLength: 8
+
+  # Postgres connection string to store tokens
+  connectionString: ""
+
+  data:
+    # Size of the data PVC to allocate for logging and static files
+    capacity: 256Mi
+    # Storage class (optional)
+    storageClass: ""
+
+  # Any annotations for the matrix registration ingress
+  # It will use the same URL as Element + '/register'
+  ingress:
+    annotations: {}
+
+  # Element Kubernetes resource settings
+  image:
+    repository: "zeratax/matrix-registration"
+    tag: v0.9.1.post1
+    pullPolicy: IfNotPresent
+  service:
+    type: ClusterIP
+    port: 5000
+  replicaCount: 1
+  resources: {}
+  probes:
+    readiness:
+      timeoutSeconds: 5
+      periodSeconds: 10
+    startup:
+      timeoutSeconds: 5
+      periodSeconds: 5
+      failureThreshold: 6
+    liveness:
+      timeoutSeconds: 5
+      periodSeconds: 10
+
+  labels:
+    component: matrix-registraton
+
 # Settings for Coturn TURN relay, used for routing voice calls
 coturn:
   # Set to false to disable the included deployment of Coturn

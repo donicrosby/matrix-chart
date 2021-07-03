@@ -1,0 +1,72 @@
+{{- if .Values.matrixRegistration.enabled }}
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "matrix.fullname" . }}-matrix-registration
+  labels:
+{{ include "matrix.labels" . | nindent 4 }}
+{{ include "matrix.matrixRegistration.labels" . | nindent 4 }}
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: {{ include "matrix.name" . }}-matrix-registration
+      app.kubernetes.io/instance: {{ .Release.Name }}
+  strategy:
+    type: RollingUpdate
+  template:
+    metadata:
+      annotations:
+        # re-roll deployment on homeserver.yaml change
+        checksum/synapse-config: {{ include (print $.Template.BasePath "/matrix-registration/configmap.yaml") . | sha256sum }}
+      labels:
+        app.kubernetes.io/name: {{ include "matrix.name" . }}-matrix-registration
+        app.kubernetes.io/instance: {{ .Release.Name }}
+    spec:
+      {{- with .Values.imagePullSecrets }}
+      imagePullSecrets:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      securityContext:
+        runAsUser: 1000
+        runAsGroup: 1000
+        fsGroup: 1000
+      initContainers:
+      containers:
+        - name: "matrix-registration"
+          image: "{{ .Values.matrixRegistration.image.repository }}:{{ .Values.matrixRegistration.image.tag }}"
+          imagePullPolicy: {{ .Values.matrixRegistration.image.pullPolicy }}
+          ports:
+            - name: http
+              containerPort: {{ .Values.matrixRegistration.service.port }}
+              protocol: TCP
+          volumeMounts:
+            - name: registration-config
+              mountPath: /data/config
+          readinessProbe:
+            httpGet:
+              path: /register
+              port: http
+          startupProbe:
+            httpGet:
+              path: /register
+              port: http
+          livenessProbe:
+            httpGet:
+              path: /register
+              port: http
+          securityContext:
+            capabilities:
+              drop:
+                - ALL
+            readOnlyRootFilesystem: true
+            allowPrivilegeEscalation: false
+          {{- with .Values.matrixRegistration.resources }}
+          resources:
+            {{- toYaml . | nindent 12 }}
+          {{- end }}
+      volumes:
+        - name: registration-config
+          configMap:
+            name: {{ include "matrix.fullname" . }}-matrix-registration-config
+{{- end }}
