@@ -31,24 +31,24 @@ spec:
         runAsUser: 1000
         runAsGroup: 1000
         fsGroup: 1000
-      # initContainers:
-      #   - name: "load-config"
-      #     image: "{{ .Values.matrixRegistration.image.repository }}:{{ .Values.matrixRegistration.image.tag }}"
-      #     imagePullPolicy: {{ .Values.matrixRegistration.image.pullPolicy }}
-      #     command: ["/bin/ash"]
-      #     args: ["-c", "cp /load/config.yaml /data/config.yaml"]
-      #     volumeMounts:
-      #       - name: data
-      #         mountPath: /data
-      #       - name: config
-      #         mountPath: /load
-      #         readOnly: true
-      #     securityContext:
-      #       capabilities:
-      #         drop:
-      #           - ALL
-      #       readOnlyRootFilesystem: true
-      #       allowPrivilegeEscalation: false
+      initContainers:
+        - name: "load-config"
+          image: "{{ .Values.matrixRegistration.initImage.repository }}:{{ .Values.matrixRegistration.initImage.tag }}"
+          imagePullPolicy: {{ .Values.matrixRegistration.initImage.pullPolicy }}
+          command: ["sh"]
+          args: ["-c", "cp /load/config.yaml /data/config.yaml"]
+          volumeMounts:
+            - name: data
+              mountPath: /data
+            - name: config
+              mountPath: /load
+              readOnly: true
+          securityContext:
+            capabilities:
+              drop:
+                - ALL
+            readOnlyRootFilesystem: true
+            allowPrivilegeEscalation: false
       containers:
         - name: "matrix-registration"
           image: "{{ .Values.matrixRegistration.image.repository }}:{{ .Values.matrixRegistration.image.tag }}"

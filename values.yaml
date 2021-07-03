@@ -541,6 +541,10 @@ matrixRegistration:
     repository: "zeratax/matrix-registration"
     tag: v0.9.1.post1
     pullPolicy: IfNotPresent
+  initImage:
+    repository: "busybox"
+    tag: 1.33.1
+    pullPolicy: IfNotPresent
   service:
     type: ClusterIP
     port: 5000
