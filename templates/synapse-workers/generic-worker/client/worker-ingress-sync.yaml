@@ -15,8 +15,12 @@ metadata:
 
   {{- if or .Values.synapseWorkers.ingress.annotations.common .Values.synapseWorkers.ingress.annotations.sync }}
   annotations:
-    {{- toYaml .Values.synapseWorkers.ingress.annotations.common | nindent 4 }}
-    {{- toYaml .Values.synapseWorkers.ingress.annotations.sync | nindent 4 }}
+    {{- with .Values.synapseWorkers.ingress.annotations.common }}
+    {{- toYaml . | nindent 4 }}
+    {{- end }}
+    {{- with .Values.synapseWorkers.ingress.annotations.sync }}
+    {{- toYaml . | nindent 4 }}
+    {{- end }}
   {{- end }}
 spec:
 {{- if .Values.ingress.tls }}
