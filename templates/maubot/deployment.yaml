@@ -52,6 +52,8 @@ spec:
         - name: "maubot"
           image: "{{ .Values.bots.maubot.image.repository }}:{{ .Values.bots.maubot.image.tag }}"
           imagePullPolicy: {{ .Values.bots.maubot.image.pullPolicy }}
+          command: ["python3"]
+          args: ["-m", "maubot", "-c", "/data/config.yaml"]
           ports:
             - name: http
               containerPort: {{ .Values.bots.maubot.service.port }}
