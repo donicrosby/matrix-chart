@@ -65,8 +65,8 @@ spec:
           #   capabilities:
           #     drop:
           #       - ALL
-            readOnlyRootFilesystem: false
-            allowPrivilegeEscalation: false
+            # readOnlyRootFilesystem: false
+            # allowPrivilegeEscalation: false
           {{- with .Values.bots.maubot.resources }}
           resources:
             {{- toYaml . | nindent 12 }}
