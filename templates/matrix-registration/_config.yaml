@@ -1,5 +1,5 @@
 {{- define "matrix-registration-config.yaml" }}
-server_location: {{ include "matrix.hostname" . | squote }}
+server_location: {{ include "matrix.baseUrl" . | squote }}
 server_name: {{ .Values.matrix.serverName | squote }}
 registration_shared_secret: {{ include "matrix.registration.sharedSecret" . | squote }} # see your synapse's homeserver.yaml
 admin_api_shared_secret: {{ include "matrix.registrationApi.sharedSecret" . | squote }} # to generate tokens via the web api
