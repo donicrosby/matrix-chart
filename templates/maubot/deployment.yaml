@@ -31,6 +31,23 @@ spec:
         runAsGroup: 1000
         fsGroup: 1000
       initContainers:
+        - name: "load-config"
+          image: "{{ .Values.bots.maubot.image.repository }}:{{ .Values.bots.maubot.image.tag }}"
+          imagePullPolicy: {{ .Values.bots.maubot.image.pullPolicy }}
+          command: ["sh"]
+          args: ["-c", "cp /load/config.yaml /data/config.yaml"]
+          volumeMounts:
+            - name: data
+              mountPath: /data
+            - name: config
+              mountPath: /load
+              readOnly: true
+          securityContext:
+            capabilities:
+              drop:
+                - ALL
+            readOnlyRootFilesystem: true
+            allowPrivilegeEscalation: false
       containers:
         - name: "maubot"
           image: "{{ .Values.bots.maubot.image.repository }}:{{ .Values.bots.maubot.image.tag }}"
@@ -40,7 +57,7 @@ spec:
               containerPort: {{ .Values.bots.maubot.service.port }}
               protocol: TCP
           volumeMounts:
-            - name: maubot-config
+            - name: config
               mountPath: /data
             - name: data
               mountPath: /data
@@ -57,7 +74,7 @@ spec:
             {{- toYaml . | nindent 12 }}
           {{- end }}
       volumes:
-        - name: maubot-config
+        - name: config
           configMap:
             name: {{ include "matrix.fullname" . }}-maubot-config
         - name: data
