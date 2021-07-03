@@ -113,11 +113,16 @@ environment in order for it to function
         generate_generic_worker_config(environ, worker_config,
                                        app, name, host,
                                        host_port, port, server_name)
+    elif app == "synapse.app.federation_send"
+        generate_federation_sender_worker_config(environ, worker_config,
+                                                 app, name, host,
+                                                 host_port, port, server_name)
     else:
         error("""\
 Synapse worker type is currently not supported or is unknown
 These are the workers that are supported:
     synapse.app.generic_worker
+    synapse.app.federation_send
 """)
 
 
