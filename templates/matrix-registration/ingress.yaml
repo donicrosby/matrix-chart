@@ -44,5 +44,12 @@ spec:
                 name: "{{ include "matrix.fullname" . }}-matrix-registration"
                 port:
                   number: {{ .Values.matrixRegistration.service.port }}
+          - pathType: Prefix
+            path: "/api"
+            backend:
+              service:
+                name: "{{ include "matrix.fullname" . }}-matrix-registration"
+                port:
+                  number: {{ .Values.matrixRegistration.service.port }}
     {{- end }}
 {{- end }}
