@@ -44,7 +44,7 @@ spec:
               protocol: TCP
           volumeMounts:
             - name: registration-config
-              mountPath: /data/config
+              mountPath: /data
             - name: data
               mountPath: /data
           securityContext:
