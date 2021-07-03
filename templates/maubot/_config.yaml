@@ -18,20 +18,20 @@ crypto_database:
     # WARNING: The pickle database is dangerous and should not be used in production.
     type: default
     postgres_uri: {{ .Values.bots.maubot.connectionString }}
-    pickle_dir: ./crypto
+    pickle_dir: /data/crypto
 
 plugin_directories:
     # The directory where uploaded new plugins should be stored.
-    upload: ./plugins
+    upload: /data/plugins
     # The directories from which plugins should be loaded.
     # Duplicate plugin IDs will be moved to the trash.
     load:
-    - ./plugins
+    - /data/plugins
     # The directory where old plugin versions and conflicting plugins should be moved.
     # Set to "delete" to delete files immediately.
-    trash: ./trash
+    trash: /data/trash
     # The directory where plugin databases should be stored.
-    db: ./plugins
+    db: /data/plugins
 
 server:
     # The IP and port to listen to.

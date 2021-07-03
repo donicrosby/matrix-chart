@@ -35,7 +35,7 @@ spec:
           image: "{{ .Values.bots.maubot.image.repository }}:{{ .Values.bots.maubot.image.tag }}"
           imagePullPolicy: {{ .Values.bots.maubot.image.pullPolicy }}
           command: ["sh"]
-          args: ["-c", "cp /load/config.yaml /data/config.yaml"]
+          args: ["-c", "cp /load/config.yaml /data/config.yaml; mkdir -p /data/plugins /data/trash"]
           volumeMounts:
             - name: data
               mountPath: /data
