@@ -8,6 +8,7 @@ metadata:
 {{ include "matrix.synapseWorkers.labels" . | indent 4}}
 spec:
   replicas: {{ .Values.synapseWorkers.federationSend.replicaCount }}
+  serviceName: {{ include "matrix.name" . }}-synapse-federation-sender
   selector:
     matchLabels:
       app.kubernetes.io/name: {{ include "matrix.name" . }}-synapse-federation-sender
