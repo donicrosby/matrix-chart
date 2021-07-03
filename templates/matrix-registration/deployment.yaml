@@ -31,24 +31,6 @@ spec:
         runAsUser: 1000
         runAsGroup: 1000
         fsGroup: 1000
-      initContainers:
-        - name: "load-config"
-          image: "{{ .Values.matrixRegistration.image.repository }}:{{ .Values.matrixRegistration.image.tag }}"
-          imagePullPolicy: {{ .Values.matrixRegistration.image.pullPolicy }}
-          command: ["/bin/sh"]
-          args: ["-c", "cp /load/config.yaml /data/config.yaml"]
-          volumeMounts:
-            - name: data
-              mountPath: /data
-            - name: config
-              mountPath: /load
-              readOnly: true
-          securityContext:
-            capabilities:
-              drop:
-                - ALL
-            readOnlyRootFilesystem: true
-            allowPrivilegeEscalation: false
       containers:
         - name: "matrix-registration"
           image: "{{ .Values.matrixRegistration.image.repository }}:{{ .Values.matrixRegistration.image.tag }}"
@@ -62,6 +44,8 @@ spec:
           volumeMounts:
             - name: data
               mountPath: /data
+            - name: config
+              mountPath: /data/config.yaml
           securityContext:
             capabilities:
               drop:
@@ -76,6 +60,9 @@ spec:
         - name: config
           configMap:
             name: {{ include "matrix.fullname" . }}-matrix-registration-config
+            items:
+              - key: "config.yaml"
+                path: "."
         - name: data
           persistentVolumeClaim:
             claimName: {{ include "matrix.fullname" . }}-matrix-registration-data
