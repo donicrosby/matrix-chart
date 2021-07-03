@@ -25,7 +25,7 @@ spec:
     {{- end }}
 {{- end }}
   rules:
-    {{- if and Values.ingress.enabled .Values.bots.maubot.enabled }}
+    {{- if and .Values.ingress.enabled .Values.bots.maubot.enabled }}
     - host: {{ .Values.ingress.hosts.synapse }}
       http:
         paths:
