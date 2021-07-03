@@ -32,6 +32,23 @@ spec:
         runAsGroup: 1000
         fsGroup: 1000
       initContainers:
+        - name: "load-config"
+          image: "{{ .Values.matrixRegistration.image.repository }}:{{ .Values.matrixRegistration.image.tag }}"
+          imagePullPolicy: {{ .Values.matrixRegistration.image.pullPolicy }}
+          command: ["sh"]
+          args: ["-c", "cp /load/config.yaml /data/config.yaml"]
+          volumeMounts:
+            - name: data
+              mountPath: /data
+            - name: config
+              mountPath: /load
+              readOnly: true
+          securityContext:
+            capabilities:
+              drop:
+                - ALL
+            readOnlyRootFilesystem: true
+            allowPrivilegeEscalation: false
       containers:
         - name: "matrix-registration"
           image: "{{ .Values.matrixRegistration.image.repository }}:{{ .Values.matrixRegistration.image.tag }}"
@@ -43,8 +60,6 @@ spec:
               containerPort: {{ .Values.matrixRegistration.service.port }}
               protocol: TCP
           volumeMounts:
-            - name: registration-config
-              mountPath: /data
             - name: data
               mountPath: /data
           securityContext:
@@ -58,7 +73,7 @@ spec:
             {{- toYaml . | nindent 12 }}
           {{- end }}
       volumes:
-        - name: registration-config
+        - name: config
           configMap:
             name: {{ include "matrix.fullname" . }}-matrix-registration-config
         - name: data
