@@ -130,7 +130,7 @@ Synapse hostname prepended with https:// to form a complete URL
 Synapse hostname prepended with https:// to form a complete URL
 */}}
 {{- define "matrix.registration.sharedSecret" -}}
-{{- if .Values.matrix.registraton.sharedSecret }}
+{{- if .Values.matrix.registration.sharedSecret }}
 {{- printf "%s" .Values.matrix.registration.sharedSecret -}}
 {{- else }}
 {{- printf "%s" | randAlphaNum 64 -}}
