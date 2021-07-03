@@ -617,8 +617,8 @@ database:
         port: "{{ .Values.postgresql.port }}"
         {{- end }}
         sslmode: {{ .Values.postgresql.sslMode }}
-        cp_min: 5
-        cp_max: 10
+        cp_min: 3
+        cp_max: 5
 
 # Number of events to cache in memory.
 #
