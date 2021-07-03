@@ -14,7 +14,7 @@ spec:
       app.kubernetes.io/name: {{ include "matrix.name" . }}-synapse-federation-sender
       app.kubernetes.io/instance: {{ .Release.Name }}
   updateStrategy:
-    type: Recreate
+    type: RollingUpdate
   template:
     metadata:
       annotations:
