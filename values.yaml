@@ -684,6 +684,9 @@ bots:
       dev_open: true
       log: true
 
+    ingress:
+      annotations: {}
+
     data:
       # Size of the PVC to allocate for the SQLite database
       capacity: 512Mi
