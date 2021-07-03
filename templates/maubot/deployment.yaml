@@ -57,8 +57,6 @@ spec:
               containerPort: {{ .Values.bots.maubot.service.port }}
               protocol: TCP
           volumeMounts:
-            - name: config
-              mountPath: /data
             - name: data
               mountPath: /data
             - name: logs
