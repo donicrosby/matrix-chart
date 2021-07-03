@@ -47,7 +47,7 @@ server:
     plugin_base_path: {{ .Values.bots.maubot.uiPath }}/plugin/
     # Override path from where to load UI resources.
     # Set to false to using pkg_resources to find the path.
-    override_resource_path: false
+    override_resource_path: /opt/maubot/frontend
     # The base appservice API path. Use / for legacy appservice API and /_matrix/app/v1 for v1.
     appservice_base_path: /_matrix/app/v1
     # The shared secret to sign API access tokens.
