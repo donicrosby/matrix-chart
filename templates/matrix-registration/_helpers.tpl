@@ -1,6 +1,6 @@
 {{/* vim: set filetype=mustache: */}}
 {{/*
-Shared secret for the Synapse Workers
+Shared secret for the Matrix Registration API
 */}}
 {{- define "matrix.registrationApi.sharedSecret" -}}
 {{- if .Values.matrixRegistration.adminApiSharedSecret }}
