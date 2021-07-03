@@ -2301,10 +2301,11 @@ opentracing:
 worker_replication_secret: "{{ .Values.synapseWorkers.sharedSecret }}"
 
 {{- if .Values.synapseWorkers.federationSend.enabled }}
+{{- $fullName := include "matrix.fullname" . -}}
 send_federation: False
 federation_sender_instances:
-{{ range $i, $e := until (.Values.synapseWorkers.federationSend.replicaCount | int) }}
-  - {{ include "matrix.fullname" . }}-synapse-federation-sender-{{ $i }}
+{{ range $i, $e := until ( .Values.synapseWorkers.federationSend.replicaCount | int ) }}
+  - {{ $fullName }}-synapse-federation-sender-{{ $i }}
 {{ end }}
 {{- end }}
 
