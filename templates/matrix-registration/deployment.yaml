@@ -36,6 +36,8 @@ spec:
         - name: "matrix-registration"
           image: "{{ .Values.matrixRegistration.image.repository }}:{{ .Values.matrixRegistration.image.tag }}"
           imagePullPolicy: {{ .Values.matrixRegistration.image.pullPolicy }}
+          args:
+            - "serve"
           ports:
             - name: http
               containerPort: {{ .Values.matrixRegistration.service.port }}
