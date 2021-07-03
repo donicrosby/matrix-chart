@@ -45,6 +45,8 @@ spec:
           volumeMounts:
             - name: registration-config
               mountPath: /data/config
+            - name: data
+              mountPath: /data
           readinessProbe:
             httpGet:
               path: /register
@@ -71,4 +73,7 @@ spec:
         - name: registration-config
           configMap:
             name: {{ include "matrix.fullname" . }}-matrix-registration-config
+        - name: data
+          persistentVolumeClaim:
+            claimName: {{ include "matrix.fullname" . }}-matrix-registration-data
 {{- end }}
