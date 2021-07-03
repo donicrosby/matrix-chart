@@ -21,7 +21,7 @@ spec:
         checksum/synapse-config: {{ include (print $.Template.BasePath "/synapse/configmap.yaml") . | sha256sum }}
         checksum/synapse-worker-config: {{ include (print $.Template.BasePath "/synapse-workers/configmap.yaml") . | sha256sum }}
       labels:
-        app.kubernetes.io/name: {{ include "matrix.name" . }}-synapse-fedneration-workers
+        app.kubernetes.io/name: {{ include "matrix.name" . }}-synapse-federation-workers
         app.kubernetes.io/instance: {{ .Release.Name }}
     spec:
       {{- with .Values.imagePullSecrets }}
