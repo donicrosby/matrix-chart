@@ -547,16 +547,9 @@ matrixRegistration:
   replicaCount: 1
   resources: {}
   probes:
-    readiness:
-      timeoutSeconds: 5
-      periodSeconds: 10
-    startup:
-      timeoutSeconds: 5
-      periodSeconds: 5
-      failureThreshold: 6
-    liveness:
-      timeoutSeconds: 5
-      periodSeconds: 10
+    readiness: {}
+    startup: {}
+    liveness: {}
 
   labels:
     component: matrix-registraton

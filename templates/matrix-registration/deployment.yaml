@@ -47,18 +47,6 @@ spec:
               mountPath: /data/config
             - name: data
               mountPath: /data
-          readinessProbe:
-            httpGet:
-              path: /register
-              port: http
-          startupProbe:
-            httpGet:
-              path: /register
-              port: http
-          livenessProbe:
-            httpGet:
-              path: /register
-              port: http
           securityContext:
             capabilities:
               drop:
