@@ -28,7 +28,7 @@ or multiple deployments
 */}}
 {{- define "matrix.synapseWorkers.federationWorkers" -}}
 {{- if .Values.synapseWorkers.separate }}
-{{- printf "%s-%s" (include "matrix.name" .) "synapse-fedneration-workers" -}}
+{{- printf "%s-%s" (include "matrix.name" .) "synapse-federation-workers" -}}
 {{- else }}
 {{- printf "%s-%s" (include "matrix.name" .) "synapse-generic-workers" -}}
 {{- end }}
