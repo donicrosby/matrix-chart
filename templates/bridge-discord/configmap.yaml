@@ -34,10 +34,17 @@ data:
       disableReadReceipts: {{ not .Values.bridges.discord.readReceipt }}
       # Disable Join Leave echos from matrix
       disableJoinLeaveNotifications: {{ not .Values.bridges.discord.joinLeaveEvents }}
+      # Disable Invite echos from matrix
+      disableInviteNotifications: {{ not .Values.bridges.discord.inviteNotifications }}
+      # Auto-determine the language of code blocks (this can be CPU-intensive)
+      determineCodeLanguage: {{ .Values.bridges.discord.determineCodeLanguage }}
     # Authentication configuration for the discord bot.
     auth:
       clientID: {{ .Values.bridges.discord.auth.clientId | quote }}
       botToken: {{ .Values.bridges.discord.auth.botToken | quote }}
+      # You must enable "Privileged Gateway Intents" in your bot settings on discord.com (e.g. https://discord.com/developers/applications/12345/bot)
+      # for this to work
+      usePrivilegedIntents: {{ .Values.bridges.discord.usePrivilegedIntents }}
       shards: 1
     logging:
       # What level should the logger output to the console at.

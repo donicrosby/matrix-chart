@@ -893,6 +893,17 @@ bridges:
     # Set to false to disable Discord notifications when a user joins/leaves the Matrix channel
     joinLeaveEvents: true
 
+    # Set to false to disable Discord notifications when invites are sent from the Matrix channel
+    inviteNotifications: true
+
+    # Auto determine the language of code blocks (this can be CPU-Intensive)
+    determineCodeLanguage: false
+
+    # Use Privileged Gateway Intents
+    # You must enable "Privileged Gateway Intents" in your bot settings on discord.com (e.g. https://discord.com/developers/applications/12345/bot)
+    # for this to work
+    usePrivilegedIntents: false
+
     # Default visibility of bridged rooms (public/private)
     defaultVisibility: public
 
