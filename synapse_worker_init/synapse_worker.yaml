@@ -13,6 +13,7 @@ worker_replication_http_port: {{ host_port }}
 worker_listeners:
   - type: http
     port: {{ port }}
+    x_forwarded: true
 {% if listener_resources %}
     resources:
       - names:
