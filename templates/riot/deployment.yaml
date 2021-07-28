@@ -38,12 +38,6 @@ spec:
               name: riot-config
               subPath: config.json
               readOnly: true
-            - mountPath: /var/cache/nginx
-              name: ephemeral
-              subPath: cache
-            - mountPath: /var/run/pid
-              name: ephemeral
-              subPath: pid
           readinessProbe:
             httpGet:
               path: /
@@ -79,7 +73,4 @@ spec:
         - name: riot-config
           configMap:
             name: {{ include "matrix.fullname" . }}-riot-config
-        # ephemeral cache, PID file, and any other temporary files nginx needs access to
-        - name: ephemeral
-          emptyDir: {}
 {{- end }}
