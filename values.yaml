@@ -81,6 +81,10 @@ matrix:
     #
     # sharedSecret: <PRIVATE STRING>
 
+    # Identity server used
+    # Should be the same as set in the .well-known/matrix/client
+    identityServer: ""
+
     # Allow users to join rooms as a guest
     allowGuests: false
 

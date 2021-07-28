@@ -13,6 +13,12 @@ data:
         "m.homeserver": {
           "base_url": {{ include "matrix.baseUrl" . | quote }}
         }
+        {{- if .Values.matrix.registration.identityServer -}}
+        ,
+        "m.identity_server": {
+            "base_url": {{ .Values.matrix.registration.identityServer | quote }}
+          }
+        {{- end }}
       },
       "brand": {{ .Values.riot.branding.brand | quote }},
       "branding": {
