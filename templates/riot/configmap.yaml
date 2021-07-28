@@ -17,7 +17,7 @@ data:
         ,
         "m.identity_server": {
             "base_url": {{ .Values.matrix.registration.identityServer | quote }}
-          }
+        }
         {{- end }}
       },
       "brand": {{ .Values.riot.branding.brand | quote }},
@@ -41,6 +41,11 @@ data:
       "showLabsSettings": true,
       {{- else }}
       "showLabsSettings": false,
+      {{- end }}
+      {{- if .Values.matrix.registration.allowGuests }} {{/* if not empty */}}
+      "disable_guests": false,
+      {{- else }}
+      "disable_guests": true,
       {{- end }}
       "features": {
         {{- if .Values.riot.labs }}
